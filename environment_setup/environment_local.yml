@@ -1,0 +1,35 @@
+name: materials_by_design_local
+
+channels:
+  - conda-forge
+
+dependencies:
+  # Python version used for the local course environment
+  - python=3.12
+
+  # Package installer used only when a package is better installed with pip
+  - pip
+
+  # Core numerical and scientific Python packages
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+
+  # Machine learning and data science
+  - scikit-learn
+
+  # Materials science packages
+  - ase
+  - pymatgen
+
+  # Additional packages that will be useful throughout the course
+  - networkx
+  - h5py
+  - openpyxl
+  - pyyaml
+  - tqdm
+
+  # Jupyter support
+  - jupyterlab
+  - ipykernel
