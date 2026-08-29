@@ -1,0 +1,12 @@
+# -----------------------------------------------------------------------------
+# TOY SCF SETTINGS -- VASP-LIKE NAMES, PYTHON BACKEND
+# Try AMIX = 0.05, 0.30, 0.70, 0.90 during class.
+# -----------------------------------------------------------------------------
+ENCUT = 400
+EDIFF = 1E-6
+NELM  = 100
+AMIX  = 0.30
+ALGO  = Normal
+
+# Toy-only input: initial charge guess on atom A. Total toy electrons = 2.
+TOY_INITIAL_CHARGE_A = 1.80

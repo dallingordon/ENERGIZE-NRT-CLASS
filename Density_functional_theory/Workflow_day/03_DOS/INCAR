@@ -1,0 +1,14 @@
+# -----------------------------------------------------------------------------
+# TOY DOS CALCULATION -- VASP-LIKE NAMES
+# Try SIGMA = 0.02, 0.08, 0.25 and change the KPOINTS mesh.
+# -----------------------------------------------------------------------------
+ICHARG = 11
+LORBIT = 11
+NEDOS  = 1000
+ISMEAR = 0
+SIGMA  = 0.08
+
+# SCF settings used once to establish the toy onsite charges at the relaxed geometry
+EDIFF = 1E-8
+NELM  = 100
+AMIX  = 0.30
