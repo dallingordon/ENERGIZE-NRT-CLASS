@@ -1,0 +1,55 @@
+GIT NOTES — working with the ENERGIZE-NRT-CLASS fork
+======================================================
+
+origin   = your fork (dallingordon/ENERGIZE-NRT-CLASS)
+upstream = original repo (Materials-Informatics-Laboratory/ENERGIZE-NRT-CLASS)
+
+
+DAY TO DAY — make changes, push to your fork
+---------------------------------------------
+git add -A
+git commit -m "your message"
+git push origin main
+
+
+PULL IN UPDATES FROM THE ORIGINAL REPO WITHOUT LOSING YOUR WORK
+------------------------------------------------------------------
+git fetch upstream
+git merge upstream/main
+
+This merges upstream's new commits into your local main, alongside your
+own commits. If both sides touched the same lines you'll get a conflict
+to resolve by hand (git marks the conflicting files); otherwise it's
+automatic. Commit the merge if prompted, then push the result back to
+your fork:
+
+git push origin main
+
+This (merge, not reset --hard) is the safe way — it keeps your commits
+intact while pulling in upstream's changes.
+
+
+OPTIONAL CLEANER SETUP — isolate your work on its own branch
+-----------------------------------------------------------------
+If you want zero risk of upstream pulls ever touching your own work,
+keep main as a pristine mirror of upstream and do your own work on a
+separate branch:
+
+git checkout -b my-work        # do your work here
+...
+git checkout main
+git pull upstream main         # keep main matching upstream exactly
+git push origin main           # optional: keep your fork's main in sync too
+
+Then main never has your commits on it, so upstream pulls never conflict
+with your work — everything you do lives isolated on my-work.
+
+
+REFERENCE — force-overwriting local with remote (destructive)
+------------------------------------------------------------------
+Only use this if you want to throw away local commits/changes and match
+a remote branch exactly:
+
+git fetch origin
+git reset --hard origin/main
+git clean -fd     # also removes untracked files/leftovers
