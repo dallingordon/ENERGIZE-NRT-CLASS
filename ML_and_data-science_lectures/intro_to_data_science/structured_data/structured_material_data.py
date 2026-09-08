@@ -424,19 +424,26 @@ loaded_df = pd.read_csv(csv_output_file)
 
 #energe_df = loaded_df(lambda x : x['Vacancy_Formation_Energy_eV'] > 2.0)
 energe_df = loaded_df[loaded_df['Vacancy_Formation_Energy_eV'].apply(lambda x: x > 2.0)]
-print(energe_df.head())
-print(loaded_df.columns)
+print(energe_df['Material_ID'])
+#print(loaded_df.columns)
 
 # 2. Find the material with the lowest average surface energy.
-#
+print("min surface energy\n\n")
+print(loaded_df.loc[loaded_df['Average_Surface_Energy_J_m2'].idxmin()])
+print("\n\n")
 # 3. Calculate the average bulk modulus of all 100 materials.
-#
+print("average bulk modulus of all 100 materials\n\n")
+print(loaded_df["Bulk_Modulus_GPa"].mean())
+print("\n\n")
 # 4. Sort the DataFrame from highest to lowest melting temperature.
 #
+loaded_df = loaded_df.sort_values("Melting_Temperature_K", ascending=False)
+
+
 # 5. Save the sorted DataFrame as:
 #
 #       materials_sorted_by_melting_temperature.csv
-#
+loaded_df.to_csv("materials_sorted_by_melting_temperature.csv")
 #
 # Example solution for Question 3:
 
