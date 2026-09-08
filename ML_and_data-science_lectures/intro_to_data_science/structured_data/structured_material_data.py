@@ -420,7 +420,13 @@ print()
 # Try these on your own:
 #
 # 1. Find all materials with vacancy formation energy above 2.0 eV.
-#
+loaded_df = pd.read_csv(csv_output_file)
+
+#energe_df = loaded_df(lambda x : x['Vacancy_Formation_Energy_eV'] > 2.0)
+energe_df = loaded_df[loaded_df['Vacancy_Formation_Energy_eV'].apply(lambda x: x > 2.0)]
+print(energe_df.head())
+print(loaded_df.columns)
+
 # 2. Find the material with the lowest average surface energy.
 #
 # 3. Calculate the average bulk modulus of all 100 materials.
