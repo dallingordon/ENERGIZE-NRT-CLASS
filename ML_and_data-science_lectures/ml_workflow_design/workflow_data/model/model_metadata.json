@@ -1,0 +1,21 @@
+{
+    "FEATURE_COLUMNS": [
+        "Surface_Area_m2_g",
+        "Pore_Volume_cm3_g",
+        "Average_Pore_Diameter_A",
+        "Framework_Density_g_cm3",
+        "Adsorption_Energy_kJ_mol",
+        "Functional_Group_Polarity",
+        "Defect_Fraction",
+        "Temperature_K",
+        "Pressure_bar",
+        "Log10_Pressure_bar"
+    ],
+    "TARGET_COLUMN": "CO2_Uptake_mmol_g",
+    "NUMBER_OF_INPUT_FEATURES": 10,
+    "HIDDEN_LAYER_1": 32,
+    "HIDDEN_LAYER_2": 16,
+    "LEARNING_RATE": 0.0002,
+    "BATCH_SIZE": 32,
+    "BEST_VALIDATION_MSE": 0.039553217589855194
+}

@@ -1,0 +1,70 @@
+{
+    "RAW_FEATURE_COLUMNS": [
+        "Surface_Area_m2_g",
+        "Pore_Volume_cm3_g",
+        "Average_Pore_Diameter_A",
+        "Framework_Density_g_cm3",
+        "Adsorption_Energy_kJ_mol",
+        "Functional_Group_Polarity",
+        "Defect_Fraction",
+        "Temperature_K",
+        "Pressure_bar"
+    ],
+    "PROCESSED_FEATURE_COLUMNS": [
+        "Surface_Area_m2_g",
+        "Pore_Volume_cm3_g",
+        "Average_Pore_Diameter_A",
+        "Framework_Density_g_cm3",
+        "Adsorption_Energy_kJ_mol",
+        "Functional_Group_Polarity",
+        "Defect_Fraction",
+        "Temperature_K",
+        "Pressure_bar",
+        "Log10_Pressure_bar"
+    ],
+    "TARGET_COLUMN": "CO2_Uptake_mmol_g",
+    "LOG_TRANSFORM_PRESSURE": true,
+    "KEPT_BOTH_PRESSURE_REPRESENTATIONS": true,
+    "NORMALIZE_FEATURES": true,
+    "MISSING_VALUE_METHOD": "median",
+    "TEST_STRATEGY": "random",
+    "FIT_PREPROCESSING_ON_TRAINING_ONLY": true,
+    "IMPUTATION_VALUES": {
+        "Surface_Area_m2_g": 2623.724299460044,
+        "Pore_Volume_cm3_g": 1.1264546852422852,
+        "Average_Pore_Diameter_A": 16.448365605909196,
+        "Framework_Density_g_cm3": 1.1989556391514777,
+        "Adsorption_Energy_kJ_mol": 28.143069826379605,
+        "Functional_Group_Polarity": 0.49199023350060933,
+        "Defect_Fraction": 0.030965287145768648,
+        "Temperature_K": 313.7660134878742,
+        "Pressure_bar": 25.353976052627047
+    },
+    "NORMALIZATION_MEAN": {
+        "Surface_Area_m2_g": 2585.5824811140014,
+        "Pore_Volume_cm3_g": 1.1172317549085573,
+        "Average_Pore_Diameter_A": 16.42746376886878,
+        "Framework_Density_g_cm3": 1.1983530556071946,
+        "Adsorption_Energy_kJ_mol": 28.362739722123525,
+        "Functional_Group_Polarity": 0.48846959419934893,
+        "Defect_Fraction": 0.03595332274790625,
+        "Temperature_K": 313.606788126842,
+        "Pressure_bar": 24.959731738910534,
+        "Log10_Pressure_bar": 1.2545880946143475
+    },
+    "NORMALIZATION_STD": {
+        "Surface_Area_m2_g": 852.2539239402211,
+        "Pore_Volume_cm3_g": 0.38249040142815843,
+        "Average_Pore_Diameter_A": 3.9496925806476346,
+        "Framework_Density_g_cm3": 0.23781157448845822,
+        "Adsorption_Energy_kJ_mol": 5.201197228072936,
+        "Functional_Group_Polarity": 0.2921982506008234,
+        "Defect_Fraction": 0.025481988640084167,
+        "Temperature_K": 20.156438068395698,
+        "Pressure_bar": 14.706897259327505,
+        "Log10_Pressure_bar": 0.44733430809349073
+    },
+    "TRAIN_ROWS": 1700,
+    "VALIDATION_ROWS": 300,
+    "TEST_ROWS": 500
+}

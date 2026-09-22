@@ -1,0 +1,8 @@
+{
+    "NUMBER_OF_SAMPLES": 2500,
+    "PRESSURE_SAMPLING": "linear",
+    "ADD_NOISE": true,
+    "NOISE_FRACTION": 0.04,
+    "ADD_OUTLIERS": false,
+    "ADD_MISSING_VALUES": false
+}

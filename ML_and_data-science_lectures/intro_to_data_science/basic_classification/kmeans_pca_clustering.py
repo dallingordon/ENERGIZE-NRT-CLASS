@@ -181,14 +181,14 @@ print()
 # Four clusters keeps the example visually simple while still showing that
 # the materials can occupy several regions of feature space.
 
-NUMBER_OF_CLUSTERS = 4
+NUMBER_OF_CLUSTERS = 5
 
 
 # Number of nearby training materials used when classifying each new material.
 #
 # A small odd number is useful because it reduces the chance of a tied vote.
 
-K_NEIGHBORS = 5
+K_NEIGHBORS = 10
 
 
 # Random seed used by KMeans.
@@ -208,9 +208,9 @@ RANDOM_SEED = 42
 
 FEATURE_COLUMNS = [
     "Vacancy_Formation_Energy_eV",
-    "Bulk_Modulus_GPa",
-    "Average_Surface_Energy_J_m2",
-    "Stacking_Fault_Energy_mJ_m2",
+    #"Bulk_Modulus_GPa",
+    #"Average_Surface_Energy_J_m2",
+    #"Stacking_Fault_Energy_mJ_m2",
     "Average_Bond_Strength_eV",
 ]
 
@@ -1060,8 +1060,9 @@ print(
             "KNN_Estimated_Melting_Temperature_K",
             "Absolute_Error_K",
         ]
-    ].head(10)
+    ].sort_values("Absolute_Error_K", ascending=False).head(10)
 )
+
 print()
 
 
@@ -1125,3 +1126,16 @@ print()
 #
 # 8. Sort test_results_df by Absolute_Error_K.
 #    Which new materials were the hardest to predict?
+   
+# First ten test-material results:
+#    Material_ID  Assigned_Cluster  Melting_Temperature_K  KNN_Estimated_Melting_Temperature_K  Absolute_Error_K
+# 0      NEW_001                 2                 867.32                             1253.792           386.472
+# 17     NEW_018                 1                1751.52                             2100.454           348.934
+# 23     NEW_024                 3                2443.25                             2128.969           314.281
+# 7      NEW_008                 4                1735.77                             1454.470           281.300
+# 1      NEW_002                 2                1032.97                             1304.934           271.964
+# 22     NEW_023                 3                2362.73                             2121.035           241.695
+# 4      NEW_005                 4                1222.62                             1460.518           237.898
+# 5      NEW_006                 2                1186.99                             1419.256           232.266
+# 2      NEW_003                 2                 999.66                             1231.736           232.076
+# 21     NEW_022                 3                2356.45                             2128.969           227.481

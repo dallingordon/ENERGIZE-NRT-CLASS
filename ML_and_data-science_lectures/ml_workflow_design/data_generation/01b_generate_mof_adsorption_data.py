@@ -1,6 +1,15 @@
 """
-STAGE 1: DATA GENERATION
-========================
+STAGE 1b: DATA GENERATION (sister of Stage 1)
+===============================================
+
+Identical data-generation logic to 01_generate_mof_adsorption_data.py.
+This script exists as the Stage-1 companion to 02b_process_mof_adsorption_data.py,
+which keeps BOTH linear pressure (Pressure_bar) and log10 pressure
+(Log10_Pressure_bar) as separate model features instead of choosing one.
+
+It writes to the exact same files as Stage 1 (workflow_data/raw/synthetic_mof_adsorption_raw.csv, etc.), so running
+this script overwrites the Stage-1 raw data. That is intentional: 02b reads
+whatever raw CSV is currently on disk, same as Stage 2 does.
 
 Create a synthetic CO2 adsorption dataset for hypothetical MOFs.
 
@@ -268,7 +277,7 @@ axes[1, 1].set_title("Pore Volume vs Uptake")
 
 figure.suptitle("Stage 1: Raw Synthetic MOF Adsorption Data", fontsize=15)
 figure.tight_layout()
-figure.savefig(RAW_DIRECTORY / "01_raw_data_diagnostics.png", dpi=200)
+figure.savefig(RAW_DIRECTORY / "01b_raw_data_diagnostics.png", dpi=200)
 plt.show()
 
 
@@ -284,4 +293,4 @@ print("Shape:", raw_df.shape)
 print()
 print(raw_df.head())
 print()
-print("Next: run 02_data_processing/02_process_mof_adsorption_data.py")
+print("Next: run data_processing/02b_process_mof_adsorption_data.py")

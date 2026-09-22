@@ -1,0 +1,12 @@
+{
+    "Training_MAE_mmol_g": 0.12905894219875336,
+    "Training_RMSE_mmol_g": 0.17284388983125468,
+    "Training_R2": 0.9900761842727661,
+    "Test_MAE_mmol_g": 0.15655404329299927,
+    "Test_RMSE_mmol_g": 0.20799703077572,
+    "Test_R2": 0.9858739376068115,
+    "TEST_STRATEGY": "random",
+    "LOG_TRANSFORM_PRESSURE": true,
+    "NORMALIZE_FEATURES": true,
+    "FIT_PREPROCESSING_ON_TRAINING_ONLY": true
+}
