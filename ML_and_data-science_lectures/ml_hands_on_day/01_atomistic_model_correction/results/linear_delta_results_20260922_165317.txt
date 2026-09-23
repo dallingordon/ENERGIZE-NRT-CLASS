@@ -1,0 +1,28 @@
+Baseline -- simulated Young's modulus as the prediction (GPa):
+                RMSE     MAE     R^2  mean bias
+  Train        28.73   23.20   0.894      +7.30
+  Test         28.64   23.73   0.867     +13.70
+  (mean bias = average of sim - exp; positive means the simulation overpredicts)
+
+Linear regression on delta -- coefficients (scaled units, train fit):
+  term                                 coef  std err        t    p-value
+  intercept                          -0.051    0.007    -7.51   1.09e-12 ***
+  cohesive_energy_eV_per_atom        +0.664    0.060   +11.00   3.49e-23 ***
+  atomic_volume_A3_per_atom          -0.359    0.036    -9.96   7.27e-20 ***
+  coordination_number                +0.302    0.031    +9.62   8.16e-19 ***
+  mean_bond_length_A                 +0.013    0.038    +0.36      0.723 
+  bulk_modulus_sim_GPa               +0.131    0.083    +1.58      0.116 *
+  shear_modulus_sim_GPa              +0.208    0.151    +1.38      0.169 *
+  youngs_modulus_sim_GPa             -0.703    0.172    -4.10    5.6e-05 ***
+  (* |t|>=1 sigma,  ** |t|>=2 sigma,  *** |t|>=3 sigma)
+
+R^2 of the delta fit (scaled delta):
+  Train  0.957
+  Test   0.936
+
+Error vs experiment (GPa):
+                            RMSE     MAE     R^2
+  Train raw sim            28.73   23.20   0.894
+  Train sim + delta         5.74    4.64   0.996
+  Test raw sim             28.64   23.73   0.867
+  Test sim + delta          6.38    5.38   0.993

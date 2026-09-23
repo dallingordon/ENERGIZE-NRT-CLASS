@@ -1,0 +1,19 @@
+{
+  "description": "Synthetic atomistic descriptors plus simulated and experimental Young's modulus for the ME500 ML hands-on exercise.",
+  "generation_settings": {
+    "seed": 500,
+    "n_materials": 320,
+    "systematic_discrepancy_strength": 1.5,
+    "random_sim_to_exp_noise_GPa": 6.0
+  },
+  "units": {
+    "cohesive_energy_eV_per_atom": "eV/atom",
+    "atomic_volume_A3_per_atom": "angstrom^3/atom",
+    "coordination_number": "dimensionless",
+    "mean_bond_length_A": "angstrom",
+    "bulk_modulus_sim_GPa": "GPa",
+    "shear_modulus_sim_GPa": "GPa",
+    "youngs_modulus_sim_GPa": "GPa",
+    "youngs_modulus_exp_GPa": "GPa"
+  }
+}

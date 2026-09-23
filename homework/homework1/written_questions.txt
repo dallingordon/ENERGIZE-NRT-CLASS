@@ -1,0 +1,100 @@
+Homework 1 - Written Questions
+(All text responses must be handwritten.)
+
+==============================================================================
+Section 1: Theoretical Concepts
+==============================================================================
+
+Question 1 (CA)
+What is the difference between structured and unstructured data? Come up with
+3 examples of each using materials science data and explain why that data is
+either structured or unstructured.
+
+
+Question 2 (CA, CE)
+I am a materials scientist that has accumulated a set of both structured and
+unstructured data over the past 2 years doing experimental characterization of
+metal microstructures. My data is mostly in the format of images but with
+corresponding structural properties for each microstructure. I have over
+250,000 images, and 1 GB worth of structural properties in over 1,000 separate
+files.
+
+  2a. Identify all unstructured and structured data.
+
+  2b. Identify how you would compile this data to share with a colleague that
+      wants to perform machine learning analysis on mapping the
+      microstructures to their corresponding structural properties.
+
+
+Question 3 (CA)
+Consider two scenarios:
+  (1) a machine learning model that maps a molecular structure to potential
+      energy, and
+  (2) a machine learning model that maps SEM images to defect concentrations.
+
+For each scenario:
+
+  3a. Describe the features, in detail, that one would need to identify to
+      create an accurate mapping between the material's structure and the
+      corresponding property.
+
+  3b. Describe the types of symmetry operations one would need to ensure that
+      the descriptors respect to map onto the corresponding property.
+
+
+==============================================================================
+Section 2: Problem Solving (written portions)
+==============================================================================
+
+Question 4 (CA, CB) - Part F: Interpret the workflow
+In approximately 150-250 words, answer the following:
+
+  4F.1  Is the model substantially better on the training data than on the
+        test data? What would a large difference between the two imply?
+
+  4F.2  Is MAE or R^2 easier to interpret physically for this problem?
+        Explain.
+
+  4F.3  Based on the test results, would you consider this model useful as a
+        rapid screening model for bulk modulus? Explain what additional
+        evidence you would want before using it on real materials.
+
+
+Question 5 (CA, CB)
+
+  5C.   Explain in 2-4 sentences why the scaler must be fit using only the
+        training data.
+
+            This prevents data leakage; to accurately asses the ability of a model to extrapolate to unseen data you need to train only on one set, and evaluate on a held out, never seen during training set. 
+            scaling on data that includes what you are evaluating on is "cheating" in the sense that you gleen information from data that you are assuming you don't have access to.
+
+  5D.   Create a small table containing the test MAE and R^2 from the
+        raw-feature and standardized-feature models.
+        5D.1  Which workflow performs better?
+
+            The normalized set.  by a landslide. 
+
+        5D.2  By approximately how much does the MAE change?
+            It drops when moving to the normalized inputs by 22 points. 
+
+  Part F: Interpret the result
+  In approximately 150-250 words, answer:
+
+  5F.1  Why does scaling have such a large effect on a distance-based model
+        such as KNN?
+            It lets the model treat all of the inputs as first class citizens.  Instead of being dominated by the highest magnitude input it lets the model learn from relative changes. 
+      That would be the grain size which is in nanometers.  It came down to units.  atomic number has a fixed range, defect fraction and porosity percent i assume are capped at 1 and 100 respectively. 
+      the values for density seem to be comparatively small, but that could be just specific to this dataset.  But grain size has the highest mean and an even higher standard deviation.  unormalized that field is going to dominate. 
+
+  5F.2  Inspect the raw-feature PCA loadings. Which feature dominates PC1, and
+        why is that unsurprising given the units/ranges in the dataset?
+            Grain size by a landslide.  As stated previously it has the highest magnitude and range, far and away. 
+
+
+  5F.3  Is standardization always scientifically correct? Give one situation
+        in which you might intentionally preserve, transform, or weight
+        features differently rather than automatically standardizing
+        everything.
+
+      if a normal distribution isn't appropriate.  Richter scale comes to mind, a logarithmic transform may be beneficial.
+      Maybe it doesn't make sense to have atomic number be normally distributed either if it is a discreet class (i can think of other reasons not to normalize it but that is maybe out of context of this assignment)

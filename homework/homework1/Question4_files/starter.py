@@ -34,6 +34,8 @@ print("sup")
 # TODO: create X and y
 X = data[FEATURES]
 y = data[TARGET]
+print(f"Number of materials: {X.shape[0]}")
+print(f"Number of input features: {X.shape[1]}")
 #print(X.head(10), y.head(10))
 #breakpoint()
 # -----------------------------------------------------------------------------
@@ -43,6 +45,8 @@ y = data[TARGET]
 res = train_test_split(X, y, test_size=0.2, random_state=42)
 #print([x.shape() for x in res])
 X_train, X_test, y_train, y_test = res
+print(f"Training samples: {len(X_train)}")
+print(f"Test samples: {len(X_test)}")
 
 #breakpoint()
 
@@ -79,6 +83,10 @@ train_mae = mean_absolute_error(y_train, train_pred)
 train_r2 = r2_score(y_train, train_pred)
 test_mae = mean_absolute_error(y_test, test_pred)
 test_r2 = r2_score(y_test, test_pred)
+print(f"Train MAE: {train_mae:.2f} GPa")
+print(f"Train R²:  {train_r2:.3f}")
+print(f"Test MAE:  {test_mae:.2f} GPa")
+print(f"Test R²:   {test_r2:.3f}")
 
 # Training data
 axes[0].scatter(y_train, train_pred, s=20)
