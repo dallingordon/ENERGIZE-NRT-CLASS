@@ -1,0 +1,10 @@
+TOY EDUCATIONAL OUTPUT -- NOT A VASP OUTCAR
+Toy geometry optimization
+==============================================================================
+Starting POSCAR = /Users/dallin.gordon/Projects/ENERGIZE-NRT-CLASS/Density_functional_theory/Workflow_day/01_SCF/POSCAR
+POTIM = 0.01
+EDIFFG = 0.02
+NSW = 500
+Initial distance = 2.80000000 Angstrom
+Final distance = 2.22112766 Angstrom
+Ionic steps = 170

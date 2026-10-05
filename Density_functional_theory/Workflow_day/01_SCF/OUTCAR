@@ -1,0 +1,12 @@
+TOY EDUCATIONAL OUTPUT -- NOT A VASP OUTCAR
+Toy SCF calculation
+==============================================================================
+Pair distance = 2.800000 Angstrom
+AMIX = 0.05
+EDIFF = 5e-06
+NELM = 100
+Converged = True
+Iterations = 74
+Final charges = [1.33182537 0.66817463]
+Final eigenvalues = [-1.0138635  1.0138635]
+Final electronic energy = -2.2479431548 toy eV
