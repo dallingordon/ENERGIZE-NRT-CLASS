@@ -11,6 +11,8 @@ module purge
 module use /projectnb/me500jc/materials/software/modules
 module load intel/2021.1
 module load vasp/6.3.2
+# bundled Open MPI was relocated; point it at its real install dir
+export OPAL_PREFIX=$SCC_VASP_DIR/third-party
 
 export OMP_NUM_THREADS=1
 export OMP_STACKSIZE=1G
