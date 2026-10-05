@@ -86,7 +86,7 @@ RUN_SEPARATION_SWEEP = True
 SWEEP_SEPARATIONS = [1.8, 2.4, 3.0, 4.0, 5.0]
 
 # Figure behavior
-SHOW_FIGURES = False           # set True for interactive classroom display
+SHOW_FIGURES = True           # set True for interactive classroom display
 FIGURE_DPI = 180
 
 

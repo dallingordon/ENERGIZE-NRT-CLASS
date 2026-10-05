@@ -10,6 +10,14 @@ What is the difference between structured and unstructured data? Come up with
 3 examples of each using materials science data and explain why that data is
 either structured or unstructured.
 
+ I've been working on battery remaining useful life predictions.  
+ For structured data I have the current and voltage at a given time point as well as the battery class.  
+ battery age is a third example.  
+ all of these are  ready to be fed to an algorithm as is (assuming a little interpolation for the cycle numbers from droped/missing time steps). 
+  Images of cells looking for dendritic growths, audio from the cycles that might capture cracking or gas escape, and anything qualitative expressed in text would take work before it was uniform and usable.  
+  An image would require segmentation to determine say, dentrite area.  
+  Classification on the audio would let you correlate the events with the appropriate cycles.
+
 
 Question 2 (CA, CE)
 I am a materials scientist that has accumulated a set of both structured and
@@ -21,9 +29,18 @@ files.
 
   2a. Identify all unstructured and structured data.
 
+
   2b. Identify how you would compile this data to share with a colleague that
       wants to perform machine learning analysis on mapping the
       microstructures to their corresponding structural properties.
+
+      The images are unstructured, and the corresponding data in the structural properties files would be structured.  
+      The images would be the inputs, and the selected properties the targets.  We would need some way to connect an image to the corresponding target in the files, maybe file name, or some look up index. 
+      What is the relationship between the images and the properties? is it a one-to-one mapping? Do we want to compare against the same held out set? Should that be decided before sharing?
+      It would be good to know how much downsampling we could get away with, likely a choice base on downstream application.  The resolution ought to be standardized, most image processing computer vision paradigms assume the same input shape that needs to be decided. 
+      Zipping the files or hosting remotely would be beneficial to both us and the downloader. 
+
+
 
 
 Question 3 (CA)
@@ -34,12 +51,26 @@ Consider two scenarios:
 
 For each scenario:
 
+
+  (1) I'm basing this heavily on my understanding of MACE.  As features you need to encode the position of the particles in 3 dimensional space and atomic number. 
+  then the interatomic features including bonds, angles, and torsion.  MACE looks at local neighborhoods so it is looking at the interatomic features only on the neighborhood of each particle.  
+  The entire system should include total charge and spin.
+
+  Energy must be invariant under translation, rotation, reflection, and permutation of identical atoms.
+
+
   3a. Describe the features, in detail, that one would need to identify to
       create an accurate mapping between the material's structure and the
       corresponding property.
 
+
+
+
+
   3b. Describe the types of symmetry operations one would need to ensure that
       the descriptors respect to map onto the corresponding property.
+
+We want to derive from our unstructured images some quantification of defect.  so which pixels belong to a defect, which are simply material.  Maybe we care about the type of defect, a crack or an inclusion, And the area of them would be important to have in order to calculate a percent defect.  Having the camera setup would be very important to determine if a larger defect is real, or a product of zoom.  Our model should be invariant to translation, rotation, reflection and camera parameters (brightness, contrast, perhaps camera setup).
 
 
 ==============================================================================
@@ -52,12 +83,23 @@ In approximately 150-250 words, answer the following:
   4F.1  Is the model substantially better on the training data than on the
         test data? What would a large difference between the two imply?
 
+        The R^2 makes me inclined to say no, on training I got 0.965 vs 0.939 but I am hesitant to say substantially without knowing downstream uses of the model.
+        A large difference would suggest poor generalizability; if it performs well on data it saw during training and poorly on held out data it has overfit and is less trustworthy at inference.
+
+
+
   4F.2  Is MAE or R^2 easier to interpret physically for this problem?
         Explain.
+
+        R squared.  in the range between 0 and 1 it is much easier to compare, how much better than average each set does.  MAE doesnt have an upper bound, less intuitive.
 
   4F.3  Based on the test results, would you consider this model useful as a
         rapid screening model for bulk modulus? Explain what additional
         evidence you would want before using it on real materials.
+
+        Very much depends on downstream usage.  I would want to examine coefficients and p-values in the regression output, see if the correlations it landed on made sense.
+
+
 
 
 Question 5 (CA, CB)
