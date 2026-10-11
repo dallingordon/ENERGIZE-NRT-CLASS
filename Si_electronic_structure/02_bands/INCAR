@@ -1,0 +1,26 @@
+SYSTEM = Si | non-SCF high-symmetry band structure
+
+# Match the SCF calculation
+ENCUT  = 350
+PREC   = Accurate
+LREAL  = .FALSE.
+ALGO   = Normal
+EDIFF  = 1E-6
+
+# Read the converged SCF charge density and keep it fixed
+ICHARG = 11
+
+# Enough empty bands to show the conduction manifold clearly
+NBANDS = 16
+
+# Occupations are only used for reporting in this fixed-charge calculation
+ISMEAR = 0
+SIGMA  = 0.05
+
+# Static calculation
+IBRION = -1
+NSW    = 0
+
+# No need to write large restart files
+LCHARG = .FALSE.
+LWAVE  = .FALSE.

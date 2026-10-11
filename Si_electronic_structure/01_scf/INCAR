@@ -1,0 +1,23 @@
+SYSTEM = Si | SCF for bands and DOS
+
+# Basis / precision
+ENCUT  = 350
+PREC   = Accurate
+LREAL  = .FALSE.
+
+# Electronic convergence
+ALGO   = Normal
+EDIFF  = 1E-6
+NELM   = 80
+
+# Semiconductor occupations
+ISMEAR = 0
+SIGMA  = 0.05
+
+# Static electronic calculation
+IBRION = -1
+NSW    = 0
+
+# Save the converged charge density for the two non-SCF calculations
+LCHARG = .TRUE.
+LWAVE  = .FALSE.

@@ -52,3 +52,13 @@ MPLBACKEND=Agg python data_generation/01b_generate_mof_adsorption_data.py && \
 MPLBACKEND=Agg python data_processing/02b_process_mof_adsorption_data.py && \
 MPLBACKEND=Agg python model_training/03_train_mof_neural_network.py && \
 MPLBACKEND=Agg python model_testing/04_test_mof_neural_network.py
+
+
+the rule of thumb for kpoint meshes, 
+
+try different k points, until it merges.  
+aluminum poscar in hands on.  
+pull down for the new stuff.  
+
+what you gonna do, when, doable by due date. 
+

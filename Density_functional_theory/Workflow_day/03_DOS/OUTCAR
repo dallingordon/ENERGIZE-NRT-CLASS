@@ -1,0 +1,12 @@
+TOY EDUCATIONAL OUTPUT -- NOT A VASP OUTCAR
+Toy DOS calculation
+==============================================================================
+Structure source = /Users/dallin.gordon/Projects/ENERGIZE-NRT-CLASS/Density_functional_theory/Workflow_day/02_geometry_optimization/CONTCAR
+Pair distance = 2.22112766 Angstrom
+KPOINT mesh = (6, 6, 6)
+Number of k points = 216
+SIGMA = 0.08
+NEDOS = 1000
+Valence maximum = -0.98661751 eV
+Conduction minimum = 0.98661751 eV
+Toy gap = 1.97323502 eV

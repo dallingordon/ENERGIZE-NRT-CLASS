@@ -1,0 +1,104 @@
+============================================================
+ Si: SCF -> BAND STRUCTURE -> DOS
+============================================================
+Job ID:   7869225
+Host:     scc-gf1
+Slots:    2
+VASP:     /projectnb/me500jc/materials/software/vasp/6.3.2/install/bin/vasp_std
+MPI:      /projectnb/me500jc/materials/software/vasp/6.3.2/install/third-party/bin/mpirun
+Started:  Sun Oct  4 15:17:28 EDT 2026
+============================================================
+
+------------------------------------------------------------
+Starting 01_scf: Sun Oct  4 15:17:28 EDT 2026
+------------------------------------------------------------
+Finished 01_scf: Sun Oct  4 15:17:35 EDT 2026
+
+------------------------------------------------------------
+Starting 02_bands: Sun Oct  4 15:17:35 EDT 2026
+------------------------------------------------------------
+Finished 02_bands: Sun Oct  4 15:17:43 EDT 2026
+
+------------------------------------------------------------
+Starting 03_dos: Sun Oct  4 15:17:43 EDT 2026
+------------------------------------------------------------
+Finished 03_dos: Sun Oct  4 15:17:49 EDT 2026
+
+============================================================
+ All three VASP stages completed successfully.
+ Finished: Sun Oct  4 15:17:49 EDT 2026
+
+ Key outputs:
+   01_scf/vasprun.xml    dense-mesh eigenvalues / gap check
+   02_bands/EIGENVAL     high-symmetry electronic bands
+   02_bands/vasprun.xml  high-symmetry electronic bands
+   03_dos/DOSCAR         density of states
+   03_dos/vasprun.xml    DOS + Fermi-level information
+============================================================
+============================================================
+ Si: SCF -> BAND STRUCTURE -> DOS
+============================================================
+Job ID:   7907221
+Host:     scc-gf3
+Slots:    2
+VASP:     /projectnb/me500jc/materials/software/vasp/6.3.2/install/bin/vasp_std
+MPI:      /projectnb/me500jc/materials/software/vasp/6.3.2/install/third-party/bin/mpirun
+Started:  Tue Oct  6 17:21:04 EDT 2026
+============================================================
+
+------------------------------------------------------------
+Starting 01_scf: Tue Oct  6 17:21:04 EDT 2026
+------------------------------------------------------------
+mpirun: Error: unknown option "-np"
+============================================================
+ Si: SCF -> BAND STRUCTURE -> DOS
+============================================================
+Job ID:   7969254
+Host:     scc-ge2
+Slots:    2
+VASP:     /projectnb/me500jc/materials/software/vasp/6.3.2/install/bin/vasp_std
+MPI:      /projectnb/me500jc/materials/software/vasp/6.3.2/install/third-party/bin/mpirun
+Started:  Thu Oct  8 16:15:29 EDT 2026
+============================================================
+
+------------------------------------------------------------
+Starting 01_scf: Thu Oct  8 16:15:29 EDT 2026
+------------------------------------------------------------
+mpirun: Error: unknown option "-np"
+============================================================
+ Si: SCF -> BAND STRUCTURE -> DOS
+============================================================
+Job ID:   7969731
+Host:     scc-gf3
+Slots:    2
+VASP:     /projectnb/me500jc/materials/software/vasp/6.3.2/install/bin/vasp_std
+MPI:      /projectnb/me500jc/materials/software/vasp/6.3.2/install/third-party/bin/mpirun
+Started:  Thu Oct  8 16:22:27 EDT 2026
+============================================================
+
+------------------------------------------------------------
+Starting 01_scf: Thu Oct  8 16:22:27 EDT 2026
+------------------------------------------------------------
+Finished 01_scf: Thu Oct  8 16:22:45 EDT 2026
+
+------------------------------------------------------------
+Starting 02_bands: Thu Oct  8 16:22:45 EDT 2026
+------------------------------------------------------------
+Finished 02_bands: Thu Oct  8 16:23:29 EDT 2026
+
+------------------------------------------------------------
+Starting 03_dos: Thu Oct  8 16:23:29 EDT 2026
+------------------------------------------------------------
+Finished 03_dos: Thu Oct  8 16:23:49 EDT 2026
+
+============================================================
+ All three VASP stages completed successfully.
+ Finished: Thu Oct  8 16:23:49 EDT 2026
+
+ Key outputs:
+   01_scf/vasprun.xml    dense-mesh eigenvalues / gap check
+   02_bands/EIGENVAL     high-symmetry electronic bands
+   02_bands/vasprun.xml  high-symmetry electronic bands
+   03_dos/DOSCAR         density of states
+   03_dos/vasprun.xml    DOS + Fermi-level information
+============================================================

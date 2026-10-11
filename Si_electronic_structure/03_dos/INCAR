@@ -1,0 +1,30 @@
+SYSTEM = Si | non-SCF density of states
+
+# Match the SCF calculation
+ENCUT  = 350
+PREC   = Accurate
+LREAL  = .FALSE.
+ALGO   = Normal
+EDIFF  = 1E-6
+
+# Read the converged SCF charge density and keep it fixed
+ICHARG = 11
+
+# Include a useful range of empty states
+NBANDS = 16
+
+# Tetrahedron DOS on a dense regular mesh
+ISMEAR = -5
+NEDOS  = 2000
+EMIN   = -12
+EMAX   = 10
+
+# Site/orbital-resolved information is also written
+LORBIT = 11
+
+# Static calculation
+IBRION = -1
+NSW    = 0
+
+LCHARG = .FALSE.
+LWAVE  = .FALSE.
