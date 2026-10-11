@@ -1,0 +1,12 @@
+SYSTEM = DOS run (problem 5), non-self-consistent from SCF CHGCAR
+ENCUT  = 400
+EDIFF  = 1E-6
+PREC   = Accurate
+LREAL  = Auto
+ICHARG = 11        ! read CHGCAR from the SCF run and keep the density fixed
+NEDOS  = 2000      ! number of points on the DOS energy grid
+ISMEAR = 0         ! Gaussian smearing
+SIGMA  = 0.05      ! small smearing width (eV) for a sharp DOS
+LORBIT = 11        ! also write projected DOS (optional, harmless)
+LWAVE  = .FALSE.
+LCHARG = .FALSE.
