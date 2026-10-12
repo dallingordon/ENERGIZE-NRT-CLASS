@@ -134,7 +134,32 @@ def parse_outcar_ionic_history(path):
               |F| = sqrt(Fx^2 + Fy^2 + Fz^2)
           and keep the maximum for that ionic step.
     """
-    raise NotImplementedError("TODO: implement parse_outcar_ionic_history()")
+    history = []
+    with open(path) as f:
+        lines = f.readlines()
+
+    energies, max_forces = [], []
+    for i, line in enumerate(lines):
+        # One "free  energy   TOTEN" line (two spaces) is printed per IONIC step.
+        # (The per-electronic-step lines read "free energy    TOTEN", so they don't match.)
+        if "free  energy   TOTEN" in line:
+            energies.append(float(line.split()[-2]))
+
+        # Force block: header, a dashed line, then one row per atom:
+        #   x y z  Fx Fy Fz   -- ends at the next dashed line
+        if "TOTAL-FORCE (eV/Angst)" in line:
+            j = i + 2
+            forces = []
+            while not lines[j].strip().startswith("---"):
+                forces.append([float(v) for v in lines[j].split()[3:6]])
+                j += 1
+            forces = np.array(forces)
+            # |F| per atom, keep the largest one for this ionic step
+            max_forces.append(np.linalg.norm(forces, axis=1).max())
+
+    for k, (e, fmax) in enumerate(zip(energies, max_forces), start=1):
+        history.append({"ionic_step": k, "energy_eV": e, "max_force_eV_A": fmax})
+    return history
 
 
 def parse_oszicar_scf_iterations(path):
@@ -156,7 +181,19 @@ def parse_oszicar_scf_iterations(path):
     Suggested return:
         list of integers, one per ionic step
     """
-    raise NotImplementedError("TODO: implement parse_oszicar_scf_iterations()")
+    counts = []
+    n = 0
+    with open(path) as f:
+        for line in f:
+            tok = line.split()
+            if not tok:
+                continue
+            if tok[0] in ("DAV:", "RMM:", "CG:"):
+                n += 1                      # one electronic (SCF) iteration
+            elif len(tok) > 1 and tok[1] == "F=":
+                counts.append(n)            # ionic step finished -> store and reset
+                n = 0
+    return counts
 
 
 # ============================================================
@@ -180,7 +217,16 @@ def minimum_image_displacements(frac_initial, frac_final, cell):
     Return:
         dcart, dmag
     """
-    raise NotImplementedError("TODO: implement minimum_image_displacements()")
+    # 1. fractional displacement of each atom
+    dfrac = frac_final - frac_initial
+    # 2. minimum image: the cell repeats, so a step of 0.985 is really -0.015.
+    #    Subtracting the nearest integer wraps every component into [-0.5, 0.5].
+    dfrac -= np.rint(dfrac)
+    # 3. fractional -> Cartesian (Angstrom)
+    dcart = dfrac @ cell
+    # 4. length of each displacement vector
+    dmag = np.linalg.norm(dcart, axis=1)
+    return dcart, dmag
 
 
 def compute_rdf(frac_coords, cell, dr=0.03):
@@ -201,7 +247,37 @@ def compute_rdf(frac_coords, cell, dr=0.03):
         - You are comparing the initial and final structures, so consistency
           matters more than extreme sophistication.
     """
-    raise NotImplementedError("TODO: implement compute_rdf()")
+    # The cell is only 5.43 A wide, so plain minimum-image distances stop at
+    # ~2.7 A (half the cell). To see the 2nd and 3rd neighbour shells we instead
+    # place copies of the cell around the original (a 5x5x5 block of images)
+    # and measure distances from each atom in the central cell to every atom
+    # in every copy.
+    r_max = 6.0
+    n = len(frac_coords)
+    cart = frac_coords @ cell
+    shifts = np.array([[i, j, k] for i in range(-2, 3)
+                                 for j in range(-2, 3)
+                                 for k in range(-2, 3)]) @ cell
+
+    dists = []
+    for a in range(n):
+        for b in range(n):
+            # vector from atom a to every periodic image of atom b
+            d = np.linalg.norm(cart[b] + shifts - cart[a], axis=1)
+            dists.extend(d[(d > 1e-8) & (d < r_max)])   # skip self-distance 0
+    dists = np.array(dists)
+
+    edges = np.arange(0.0, r_max + dr, dr)
+    hist, _ = np.histogram(dists, bins=edges)
+    r = 0.5 * (edges[1:] + edges[:-1])
+
+    # Normalize: divide by what an ideal gas of the same density would give,
+    # so g(r) -> 1 at large r and peaks show neighbour shells.
+    volume = abs(np.linalg.det(cell))
+    rho = n / volume
+    shell_vol = 4.0 / 3.0 * np.pi * (edges[1:] ** 3 - edges[:-1] ** 3)
+    g = hist / (n * rho * shell_vol)
+    return r, g
 
 
 # ============================================================
@@ -236,111 +312,104 @@ def main():
         raise SystemExit(f"Missing required files: {', '.join(missing)}")
 
     # --------------------------------------------------------
-    # 2. Read the initial and final structures
+    # 2. Read the initial (POSCAR) and relaxed (CONTCAR) structures.
+    #    CONTCAR is VASP's output, written in the same format as POSCAR.
     # --------------------------------------------------------
-    # TODO: uncomment after implementing read_poscar()
     cell0, frac0, cart0, labels0 = read_poscar(ROOT / "POSCAR")
-    ##cell1, frac1, cart1, labels1 = read_poscar(ROOT / "CONTCAR") #this is an scc output?
-    breakpoint()
+    cell1, frac1, cart1, labels1 = read_poscar(ROOT / "CONTCAR")
 
     # --------------------------------------------------------
     # 3. Compute atomic displacements
     # --------------------------------------------------------
-    # TODO: uncomment after implementing minimum_image_displacements()
-    # dcart, dmag = minimum_image_displacements(frac0, frac1, cell0)
-    #
-    # largest_atom_index = np.argmax(dmag)
-    # largest_displacement = dmag[largest_atom_index]
+    dcart, dmag = minimum_image_displacements(frac0, frac1, cell0)
+
+    largest_atom_index = np.argmax(dmag)
+    largest_displacement = dmag[largest_atom_index]
+
+    print("Per-atom displacement (A):")
+    for i, (lab, d) in enumerate(zip(labels0, dmag), start=1):
+        print(f"  atom {i} ({lab}): {d:.4f}")
 
     # --------------------------------------------------------
     # 4. Extract ionic-step energy / force history
     # --------------------------------------------------------
-    # TODO: uncomment after implementing parse_outcar_ionic_history()
-    # history = parse_outcar_ionic_history(ROOT / "OUTCAR")
-    #
-    # steps = np.array([row["ionic_step"] for row in history])
-    # energies = np.array([row["energy_eV"] for row in history], dtype=float)
-    # forces = np.array([row["max_force_eV_A"] for row in history], dtype=float)
+    history = parse_outcar_ionic_history(ROOT / "OUTCAR")
+
+    steps = np.array([row["ionic_step"] for row in history])
+    energies = np.array([row["energy_eV"] for row in history], dtype=float)
+    forces = np.array([row["max_force_eV_A"] for row in history], dtype=float)
 
     # --------------------------------------------------------
-    # 5. OPTIONAL: Extract SCF iteration counts from OSZICAR
+    # 5. Extract SCF iteration counts from OSZICAR
     # --------------------------------------------------------
-    # if (ROOT / "OSZICAR").exists():
-    #     scf_counts = parse_oszicar_scf_iterations(ROOT / "OSZICAR")
-    # else:
-    #     scf_counts = []
+    if (ROOT / "OSZICAR").exists():
+        scf_counts = parse_oszicar_scf_iterations(ROOT / "OSZICAR")
+    else:
+        scf_counts = []
 
     # --------------------------------------------------------
     # 6. Plot energy and force vs ionic step
     # --------------------------------------------------------
-    # TODO: make the required figure and save it as:
-    #       problem4_geometry_optimization.png
-    #
-    # Suggested structure:
-    #
-    # fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-    #
-    # axes[0].plot(steps, energies, marker="o")
-    # axes[0].set_xlabel("Ionic step")
-    # axes[0].set_ylabel("Total energy (eV)")
-    # axes[0].set_title("Total energy vs ionic step")
-    #
-    # axes[1].plot(steps, forces, marker="o")
-    # axes[1].set_xlabel("Ionic step")
-    # axes[1].set_ylabel("Maximum force (eV/Å)")
-    # axes[1].set_title("Maximum force vs ionic step")
-    #
-    # fig.tight_layout()
-    # fig.savefig(ROOT / "problem4_geometry_optimization.png", dpi=200)
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+    axes[0].plot(steps, energies, marker="o")
+    axes[0].set_xlabel("Ionic step")
+    axes[0].set_ylabel("Total energy (eV)")
+    axes[0].set_title("Total energy vs ionic step")
+
+    axes[1].plot(steps, forces, marker="o")
+    axes[1].axhline(0.02, ls="--", c="gray", label="EDIFFG = 0.02 eV/Å")
+    axes[1].set_xlabel("Ionic step")
+    axes[1].set_ylabel("Maximum force (eV/Å)")
+    axes[1].set_title("Maximum force vs ionic step")
+    axes[1].legend()
+
+    fig.tight_layout()
+    fig.savefig(ROOT / "problem4_geometry_optimization.png", dpi=200)
 
     # --------------------------------------------------------
     # 7. Compute and plot RDFs for initial and final structures
     # --------------------------------------------------------
-    # TODO:
-    # r0, g0 = compute_rdf(frac0, cell0)
-    # r1, g1 = compute_rdf(frac1, cell1)
-    #
-    # fig, ax = plt.subplots(figsize=(7, 4.5))
-    # ax.plot(r0, g0, label="Initial POSCAR")
-    # ax.plot(r1, g1, label="Final CONTCAR")
-    # ax.set_xlabel(r"$r$ ($\AA$)")
-    # ax.set_ylabel(r"$g(r)$")
-    # ax.set_title("Initial vs final radial distribution function")
-    # ax.legend()
-    # fig.tight_layout()
-    # fig.savefig(ROOT / "problem4_RDF.png", dpi=200)
+    r0, g0 = compute_rdf(frac0, cell0)
+    r1, g1 = compute_rdf(frac1, cell1)
+
+    fig, ax = plt.subplots(figsize=(7, 4.5))
+    ax.plot(r0, g0, label="Initial POSCAR")
+    ax.plot(r1, g1, label="Final CONTCAR")
+    ax.set_xlabel(r"$r$ ($\AA$)")
+    ax.set_ylabel(r"$g(r)$")
+    ax.set_title("Initial vs final radial distribution function")
+    ax.legend()
+    fig.tight_layout()
+    fig.savefig(ROOT / "problem4_RDF.png", dpi=200)
 
     # --------------------------------------------------------
     # 8. Save a small summary table
     # --------------------------------------------------------
-    # TODO:
-    # summary_rows = [
-    #     ("ionic_steps", len(history)),
-    #     ("initial_energy_eV", energies[0]),
-    #     ("final_energy_eV", energies[-1]),
-    #     ("final_max_force_eV_A", forces[-1]),
-    #     ("largest_displacement_A", largest_displacement),
-    #     ("largest_displacement_atom", largest_atom_index + 1),
-    # ]
-    #
-    # if scf_counts:
-    #     summary_rows.append(("first_ionic_step_scf_iterations", scf_counts[0]))
-    #     summary_rows.append(("last_ionic_step_scf_iterations", scf_counts[-1]))
-    #
-    # save_summary_table(ROOT / "problem4_summary.csv", summary_rows)
+    summary_rows = [
+        ("ionic_steps", len(history)),
+        ("initial_energy_eV", energies[0]),
+        ("final_energy_eV", energies[-1]),
+        ("final_max_force_eV_A", forces[-1]),
+        ("largest_displacement_A", largest_displacement),
+        ("largest_displacement_atom", largest_atom_index + 1),
+    ]
+
+    if scf_counts:
+        summary_rows.append(("first_ionic_step_scf_iterations", scf_counts[0]))
+        summary_rows.append(("last_ionic_step_scf_iterations", scf_counts[-1]))
+
+    save_summary_table(ROOT / "problem4_summary.csv", summary_rows)
 
     # --------------------------------------------------------
     # 9. Print a concise console summary
     # --------------------------------------------------------
-    # TODO:
-    # print(f"Ionic steps: {len(history)}")
-    # print(f"Initial energy: {energies[0]:.6f} eV")
-    # print(f"Final energy:   {energies[-1]:.6f} eV")
-    # print(f"Final max force:{forces[-1]:.6f} eV/A")
-    # print(f"Largest displacement: {largest_displacement:.6f} A")
-    #
-    print("Problem 4 template loaded.")
-    print("Complete the TODO sections to perform the full analysis.")
+    print(f"Ionic steps: {len(history)}")
+    print(f"Initial energy: {energies[0]:.6f} eV")
+    print(f"Final energy:   {energies[-1]:.6f} eV")
+    print(f"Final max force:{forces[-1]:.6f} eV/A")
+    print(f"Largest displacement: {largest_displacement:.6f} A (atom {largest_atom_index + 1})")
+    print(f"SCF iterations per ionic step: {scf_counts}")
 
 
 if __name__ == "__main__":
