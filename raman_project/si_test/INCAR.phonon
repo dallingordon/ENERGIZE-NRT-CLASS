@@ -1,0 +1,13 @@
+SYSTEM  = Si Gamma phonons (DFPT)
+PREC    = Accurate
+ENCUT   = 600
+EDIFF   = 1E-8
+IBRION  = 8
+NSW     = 1
+ISMEAR  = 0
+SIGMA   = 0.01
+LREAL   = .FALSE.
+ADDGRID = .TRUE.
+NWRITE  = 3            ! prints "Eigenvectors after division by SQRT(mass)" (needed by raman.py)
+LWAVE   = .FALSE.
+LCHARG  = .FALSE.
