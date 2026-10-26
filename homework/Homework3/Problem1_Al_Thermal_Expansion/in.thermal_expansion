@@ -4,7 +4,7 @@ boundary        p p p
 atom_style      atomic
 
 # -----------------------------
-# Build a 4 x 4 x 4 FCC crystal
+# Build a 4 x 4 x 4 FCC crystal just learned what this is.  fun to picture 3d structures in my head.  
 # -----------------------------
 variable        a0 equal 4.05
 lattice         fcc ${a0}
@@ -17,8 +17,8 @@ mass            1 26.9815385
 # ------------------------------------------------
 # INTERATOMIC POTENTIAL
 # ------------------------------------------------
-# pair_style    eam/alloy
-# pair_coeff    * * Al_zhou.eam.alloy Al
+pair_style    eam/alloy
+pair_coeff    * * Al_zhou.eam.alloy Al
 
 neighbor        2.0 bin
 neigh_modify    delay 0 every 1 check yes

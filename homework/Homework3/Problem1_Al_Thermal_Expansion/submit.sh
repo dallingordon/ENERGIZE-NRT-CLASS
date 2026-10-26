@@ -12,7 +12,7 @@ module load gcc/11.2.0
 
 lammps_bin_dir=/projectnb/me500jc/materials/software/lammps/src
 lammps_bin=lmp_mpi
-lammps_input=input.in
+lammps_input=in.thermal_expansion
 outfile=out
 
 # VASP recommends increasing the OpenMP stack size.
