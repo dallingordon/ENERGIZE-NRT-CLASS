@@ -65,9 +65,7 @@ run             20000
 # The output file contains:
 # timestep, temperature, pressure, volume, Lx, Ly, Lz
 # -----------------------------
-fix             avg all ave/time 100 10 1000 \
-                v_Tinst v_Pinst v_Vinst v_Lxinst v_Lyinst v_Lzinst \
-                file thermal_${T}.dat
+fix             avg all ave/time 100 10 1000 v_Tinst v_Pinst v_Vinst v_Lxinst v_Lyinst v_Lzinst file thermal_${T}.dat
 
 run             20000
 

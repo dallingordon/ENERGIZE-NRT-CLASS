@@ -18,4 +18,6 @@ outfile=out
 # VASP recommends increasing the OpenMP stack size.
 export OMP_STACKSIZE=1G
 #  Explanation is below
-mpirun -np 12 ${lammps_bin_dir}/${lammps_bin} < ${lammps_input} > ${outfile}
+#mpirun -np 12 ${lammps_bin_dir}/${lammps_bin} < ${lammps_input} > ${outfile}
+#the frenchman says do this: 
+mpirun -np 12 ${lammps_bin_dir}/${lammps_bin} -in ${lammps_input} > ${outfile}
