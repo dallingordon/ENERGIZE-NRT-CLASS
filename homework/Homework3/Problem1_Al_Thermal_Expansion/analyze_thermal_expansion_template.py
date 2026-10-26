@@ -109,7 +109,17 @@ print(summary.to_string(index=False))
 # Label both axes with units and save:
 #     al_thermal_expansion.png
 #
-# YOUR CODE HERE
+T = summary["target_temperature_K"].to_numpy()
+a = summary["mean_lattice_parameter_A"].to_numpy()
+a_err = summary["sem_lattice_parameter_A"].to_numpy()
+
+fig, (ax, ax_res) = plt.subplots(
+    2, 1, figsize=(7, 6.5), sharex=True, gridspec_kw={"height_ratios": [3, 1.3]}
+)
+ax.errorbar(T, a, yerr=a_err, fmt="o", ms=6, capsize=4, zorder=3, label="MD average (± SEM)")
+ax.set_ylabel("Lattice parameter a (Å)")
+ax.set_title("FCC Al thermal expansion (EAM, NPT)")
+ax.legend()
 
 
 # =====================================================================
@@ -119,7 +129,23 @@ print(summary.to_string(index=False))
 # You may use numpy.polyfit, but Yyou must implement the fit and alpha calculation.
 # Add the fitted line to your plot.
 #
-# YOUR CODE HERE
+# Linear fit a(T) = a_ref + m*T  (polyfit returns [slope, intercept])
+m, a_ref = np.polyfit(T, a, 1) # the fit
+alpha = m / a_ref  # alpha calc
+
+T_line = np.linspace(T.min(), T.max(), 100)
+ax.plot(T_line, a_ref + m * T_line, "--", label="linear fit")
+ax.legend()
+
+# Residual panel: data minus fit, in milli-angstroms, so the SEM bars are visible
+residual_mA = (a - (a_ref + m * T)) * 1000
+ax_res.axhline(0, color="C1", ls="--", lw=1)
+ax_res.errorbar(T, residual_mA, yerr=a_err * 1000, fmt="o", ms=6, capsize=4)
+ax_res.set_ylabel("data − fit (mÅ)")
+ax_res.set_xlabel("Temperature (K)")
+plt.tight_layout()
+#plt.savefig(ROOT / "al_thermal_expansion.png", dpi=150)
+plt.show()
 
 
 # =====================================================================
@@ -130,14 +156,33 @@ print(summary.to_string(index=False))
 #   reference lattice a_ref [A]
 #   alpha                    [1/K]
 #
-# YOUR CODE HERE
+print("\nLinear thermal expansion fit: a(T) = a_ref + (da/dT) * T")
+print("=======================================================")
+print(f"fitted slope da/dT      = {m:.4e} A/K")
+print(f"reference lattice a_ref = {a_ref:.5f} A")
+print(f"alpha                   = {alpha:.4e} 1/K")
 
+
+##EIn a short response, explain why NPT is the appropriate ensemble for this property. Explicitly
+##contrast it with NVT, where the simulation-cell volume is fixed. Your response should connect the
+##controlled ensemble variables to the physical quantity being measured.
+## Studying thermal expansion means we are interested in how a material expands, how its volume changes, as temperature increases.  
+## So we can see provided a set of inputs what our output would be.  We care about volume explicitly, we want to see at a particular temperature.
+## So lets let it vary, and pick our temperatures.  NVT would mean we selected temperature and volume which just writing that out seems to go against the question we are asking. 
+## in the case of NVT we could still pick our temperature, but we would also have to pick our volume, and pressure would be the property we would meassure. 
+## we would basically be constraining the thermal expansion to whatever volume we chose.  It wouldn't give us the output we wanted to anwer our question.
+##
 
 # =====================================================================
 # QUESTIONS TO ADDRESS IN YOUR INTERPRETATION
 # =====================================================================
 # 1. Does the average lattice parameter increase monotonically with T?
+#  It does, but not linearly.  it is growing faster than a linear fit line.
 # 2. Why does NPT allow thermal expansion to occur naturally?
+# Since volume isn't held constant and pressure and temperature are that is the variable that has to change to keep those constant. Increase in temperature increases the amplitude at which the atoms vibrate and since it is easier to move ataoms apart than closer together at a certain point, expansion happens. 
 # 3. What would change physically if the same simulations were run in NVT?
+#  Pressure would increase with temperature since now volume is held constant. 
 # 4. Why use time-averaged production data rather than one instantaneous volume?
+# There are fluctuations happening all the time, and the parameter we actually care about expressed as an average overcomes those fluctuations.  Single points can be high or low, less likely to capture and express the property we care about.
 # 5. What assumptions are made by fitting one linear alpha over 100-700 K?
+# That the volume grows linearly with temperature.  It appears not to (as mentioned in 1 it seems to grow faster than linearly).
