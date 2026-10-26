@@ -1,0 +1,80 @@
+units           metal
+dimension       3
+boundary        p p p
+atom_style      atomic
+
+# -----------------------------
+# Build a 4 x 4 x 4 FCC crystal
+# -----------------------------
+variable        a0 equal 4.05
+lattice         fcc ${a0}
+region          simbox block 0 4 0 4 0 4 units lattice
+create_box      1 simbox
+create_atoms    1 box
+
+mass            1 26.9815385
+
+# ------------------------------------------------
+# INTERATOMIC POTENTIAL
+# ------------------------------------------------
+# pair_style    eam/alloy
+# pair_coeff    * * Al_zhou.eam.alloy Al
+
+neighbor        2.0 bin
+neigh_modify    delay 0 every 1 check yes
+
+# -----------------------------
+# MD settings
+# -----------------------------
+timestep        0.001       # ps = 1 fs in "metal" units
+thermo          500
+thermo_style    custom step temp press pe ke etotal vol lx ly lz density
+
+# Equal-style variables used by fix ave/time during production.
+variable        Tinst equal temp
+variable        Pinst equal press
+variable        Vinst equal vol
+variable        Lxinst equal lx
+variable        Lyinst equal ly
+variable        Lzinst equal lz
+
+# Temperatures for the thermal-expansion study.
+variable        T index 100 300 500 700
+
+label           temperature_loop
+
+print           "============================================================"
+print           "Starting NPT simulation at T = ${T} K"
+print           "============================================================"
+
+# Each temperature is re-equilibrated before production sampling.
+reset_timestep  0
+velocity        all create ${T} 4928459 mom yes rot yes dist gaussian
+
+# NPT: target temperature T and target pressure 0 bar.
+# Tdamp = 0.1 ps, Pdamp = 1.0 ps.
+fix             npt_run all npt temp ${T} ${T} 0.1 iso 0.0 0.0 1.0
+
+# -----------------------------
+# Equilibration: 20 ps
+# -----------------------------
+run             20000
+
+# -----------------------------
+# Production: 20 ps
+# The output file contains:
+# timestep, temperature, pressure, volume, Lx, Ly, Lz
+# -----------------------------
+fix             avg all ave/time 100 10 1000 \
+                v_Tinst v_Pinst v_Vinst v_Lxinst v_Lyinst v_Lzinst \
+                file thermal_${T}.dat
+
+run             20000
+
+unfix           avg
+unfix           npt_run
+
+next            T
+jump            SELF temperature_loop
+
+print           "All temperature runs are complete."
