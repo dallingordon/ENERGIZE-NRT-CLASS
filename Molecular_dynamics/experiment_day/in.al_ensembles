@@ -1,0 +1,94 @@
+# =====================================================================
+# FCC Al ensemble exercise: NPT -> NVT -> NVE
+#
+# Expected structure file:
+#   al_fcc_3x3x3.data
+#
+# Typical batch-script invocation:
+#   mpirun ... lmp -in in.al_ensembles > out
+#
+# The analysis script expects:
+#   out
+#   al_trajectory.dump
+# =====================================================================
+
+units           metal
+atom_style      atomic
+boundary        p p p
+
+read_data       al_fcc_3x3x3.data
+
+# ---------------------------------------------------------------------
+# INTERATOMIC POTENTIAL
+# Replace the filename below with the Al EAM/alloy potential used in class.
+# ---------------------------------------------------------------------
+pair_style      eam/alloy
+pair_coeff      * * Al_zhou.eam.alloy Al
+
+neighbor        2.0 bin
+neigh_modify    delay 0 every 1 check yes
+
+# ---------------------------------------------------------------------
+# Initial velocities and integration settings
+# metal units: time is ps, so 0.001 ps = 1 fs
+# ---------------------------------------------------------------------
+timestep        0.001
+velocity        all create 1000.0 4928459 mom yes rot no dist gaussian
+
+# Remove any residual center-of-mass translation.
+velocity        all zero linear
+
+# ---------------------------------------------------------------------
+# Thermodynamic output -> stdout -> your batch script pipes this to "out"
+# Energies are total-system energies in eV.
+# ---------------------------------------------------------------------
+thermo          100
+thermo_style    custom step time temp press pe ke etotal vol density lx ly lz
+thermo_modify   flush yes
+
+# ---------------------------------------------------------------------
+# Trajectory output every 100 timesteps.
+#
+# x,y,z    = wrapped Cartesian positions
+# xu,yu,zu = unwrapped Cartesian positions (used for MSD)
+# vx,vy,vz = velocities (A/ps)
+# fx,fy,fz = forces (eV/A)
+# ---------------------------------------------------------------------
+dump            traj all custom 100 al_trajectory.dump id type x y z xu yu zu vx vy vz fx fy fz
+dump_modify     traj sort id
+
+# =====================================================================
+# STAGE 1: NPT at 1000 K and 0 bar
+# 20,000 steps x 1 fs = 20 ps
+# =====================================================================
+print           "PHASE_START NPT 0"
+fix             ensemble all npt temp 1000.0 1000.0 0.1 iso 0.0 0.0 1.0
+run             20000
+unfix           ensemble
+print           "PHASE_END NPT 20000"
+
+# =====================================================================
+# STAGE 2: NVT at 1000 K
+# Volume is now held fixed at the final NPT cell.
+# 20 ps
+# =====================================================================
+print           "PHASE_START NVT 20000"
+fix             ensemble all nvt temp 1000.0 1000.0 0.1
+run             20000
+unfix           ensemble
+print           "PHASE_END NVT 40000"
+
+# =====================================================================
+# STAGE 3: NVE
+# No thermostat or barostat. The system evolves microcanonically.
+# 20 ps
+# =====================================================================
+print           "PHASE_START NVE 40000"
+fix             ensemble all nve
+run             20000
+unfix           ensemble
+print           "PHASE_END NVE 60000"
+
+undump          traj
+
+print           "SIMULATION_COMPLETE"

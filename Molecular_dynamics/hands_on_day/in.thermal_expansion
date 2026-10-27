@@ -1,0 +1,79 @@
+# ================================================================
+# IN-CLASS ACTIVITY
+# Five independent NPT simulations for FCC Al thermal expansion
+#
+# Students:
+#   1. Make sure al_fcc_4x4x4.data is present.
+#   2. Replace TEMP1 ... TEMP5 below with temperatures in K.
+#
+# ================================================================
+
+# STUDENT TODO: choose/set FIVE temperatures in Kelvin.
+# Example FORMAT ONLY:
+# variable T index 100 300 500 700 900
+variable T index TEMP1 TEMP2 TEMP3 TEMP4 TEMP5
+
+label temperature_loop
+
+# clear resets the simulation, but input-script variables survive.
+clear
+
+units           metal
+dimension       3
+boundary        p p p
+atom_style      atomic
+
+# Every temperature begins from the same original structure.
+read_data       al_fcc_4x4x4.data
+mass            1 26.9815385
+
+# ------------------------------------------------
+# INTERATOMIC POTENTIAL
+# ------------------------------------------------
+# pair_style    eam/alloy
+# pair_coeff    * * Al_zhou.eam.alloy Al
+
+neighbor        2.0 bin
+neigh_modify    delay 0 every 1 check yes
+
+# 1 fs
+timestep        0.001
+
+# Independent Maxwell-Boltzmann initialization for each run.
+velocity        all create ${T} 4928459 mom yes rot yes dist gaussian
+
+thermo          500
+thermo_style    custom step temp press pe ke etotal vol lx ly lz density
+
+print           "============================================================"
+print           "INDEPENDENT NPT RUN: TARGET_T = ${T} K, TARGET_P = 0 bar"
+print           "============================================================"
+
+# NPT at selected T and 0 bar.
+fix             ensemble all npt temp ${T} ${T} 0.1 iso 0.0 0.0 1.0
+
+# Equilibration: 5 ps
+run             5000
+
+# Production output: block-averaged T, P, V every 0.5 ps.
+variable        Tinst equal temp
+variable        Pinst equal press
+variable        Vinst equal vol
+
+fix             avg all ave/time 100 5 500 \
+                v_Tinst v_Pinst v_Vinst \
+                file thermal_${T}.dat
+
+# Production: 10 ps
+run             10000
+
+unfix           avg
+unfix           ensemble
+
+print           "Finished TARGET_T = ${T} K"
+print           "Output file: thermal_${T}.dat"
+
+next            T
+jump            SELF temperature_loop
+
+print           "All five independent NPT simulations are complete."

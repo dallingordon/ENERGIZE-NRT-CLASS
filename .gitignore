@@ -1,5 +1,9 @@
 *.csv
 *.xlsx
+*.pt
+*.png
+*.pyc
+*.joblib
 .DS_Store
 POTCAR
 homework/Homework2_latest/
