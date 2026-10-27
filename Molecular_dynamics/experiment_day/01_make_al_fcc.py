@@ -15,7 +15,7 @@ from pathlib import Path
 # -----------------------------
 # User-adjustable settings
 # -----------------------------
-A0 = 4.05       # FCC lattice parameter, Angstrom
+A0 = 4.05       # FCC lattice parameter, Angstrom. face center cubic.  a cubic crystal. 
 NX = NY = NZ = 3
 MASS_AL = 26.9815385
 
