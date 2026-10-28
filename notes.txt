@@ -62,3 +62,4 @@ pull down for the new stuff.
 
 what you gonna do, when, doable by due date. 
 
+scp dgordon@scc1.bu.edu:~/ENERGIZE-NRT-CLASS/Molecular_dynamics/experiment_day/{out,al_trajectory.dump} .

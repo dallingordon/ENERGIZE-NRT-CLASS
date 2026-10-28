@@ -116,12 +116,23 @@ pd.DataFrame({"distance_A": r_plot, "fitted_energy_eV": e_plot}).to_csv(
 #   * use pbc=False
 # The variable MUST be named atoms.
 #
-atoms = None
 
-if atoms is None:
-    raise NotImplementedError(
-        "TODO: construct the Al2 initial positions and ASE Atoms object."
-    )
+positions = [
+    (8.25, 10, 10) , #3.5 apart, not from center.  10 +/- 1.75
+    (11.75, 10, 10) ,
+]
+atoms = Atoms(
+    "Al2",
+    positions=positions,
+    cell=[CELL_LENGTH_A, CELL_LENGTH_A, CELL_LENGTH_A], #constant at the top
+    pbc=False,
+)
+
+#never runs now :). well, i guess it shouldn't
+# if atoms is None:
+#     raise NotImplementedError(
+#         "TODO: construct the Al2 initial positions and ASE Atoms object."
+#     )
 
 
 # =====================================================================
@@ -148,8 +159,21 @@ print(f"Initial LJ energy       = {initial_energy:.6f} eV")
 #   * optimize until fmax <= FMAX_TARGET_EV_PER_A.
 # Determine how to import, initialize, and run the optimizer using ASE docs.
 #
-# YOUR CODE HERE
-optimization_completed = False
+
+#https://docs.ase-lib.org/ase/optimize.html checked claude with this page. 
+from ase.optimize import BFGS
+
+opt = BFGS(
+    atoms,
+    trajectory=str(RESULTS_DIR / "Al2_LJ_optimization.traj"),
+    logfile=str(RESULTS_DIR / "Al2_LJ_optimization.log"),
+)
+opt.run(fmax=FMAX_TARGET_EV_PER_A, steps=500)
+
+# Confirm convergence explicitly: largest per-atom force must be <= fmax
+#FMAX_TARGET_EV_PER_A = 0.01 (line 45), preset
+fmax_final = np.max(np.linalg.norm(atoms.get_forces(), axis=1))
+optimization_completed = fmax_final <= FMAX_TARGET_EV_PER_A
 
 if not optimization_completed:
     raise NotImplementedError(
@@ -157,6 +181,9 @@ if not optimization_completed:
         "optimization_completed = True."
     )
 
+
+#ase gui results/Al2_LJ_optimization.traj
+#neat
 
 # =====================================================================
 # PART E — SAVE THE OPTIMIZED LJ RESULT

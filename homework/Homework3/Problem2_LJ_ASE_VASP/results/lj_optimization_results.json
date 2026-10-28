@@ -1,0 +1,8 @@
+{
+  "initial_distance_A": 3.5,
+  "final_distance_A": 2.7388269451751057,
+  "initial_energy_eV": -0.38115558416703754,
+  "final_energy_eV": -0.9453752619970307,
+  "max_force_eV_per_A": 0.00047662648674615533,
+  "fmax_target_eV_per_A": 0.01
+}
