@@ -1,0 +1,86 @@
+SIMULATED Si RAMAN vs. CONTRASTIVE MATCHING NETWORK -- first results (2026-11-16)
+=================================================================================
+
+QUESTION
+  Can a Raman spectrum simulated from the crystal structure alone (DFT, no experimental input)
+  be identified by a contrastive spectra-matching network trained on experimental RRUFF data?
+  Network: Li, Schmidt & Alstrom, "Raman spectrum matching with contrastive representation
+  learning", Analyst 147 (2022) 2238. Code + trained weights from the authors (unmodified).
+  Si is the test case before quartz: one Raman-active mode, and it is in the RRUFF library.
+
+WHAT WE RAN
+  Simulation  VASP, PBE. Relax -> Gamma phonons (DFPT) -> Raman activities from finite-difference
+              dielectric tensors (+/-0.01 A along each optical mode) -> Lorentzian-broadened spectrum.
+              Result: triply degenerate optical mode at 502.45 cm-1 (expt ~520.7; PBE runs soft).
+  Inputs      Converted to the model's grid with the repo's own interpolation + min-max norm.
+                si_sim x1.0    DFT spectrum as computed           (peak 502 cm-1)
+                si_sim x1.036  DFT frequencies scaled by 1.036    (peak 521 cm-1)
+                silicon_514/532/780  experimental RRUFF Si at three laser wavelengths (controls;
+                                     peaks 519 / 521 / 517 cm-1). These may themselves be in the
+                                     reference library, so they test the plumbing, not the model.
+  Setup       "excellent_unoriented" model + reference library: 3554 RRUFF spectra, 1310 minerals,
+              76-1403 cm-1. 6 independently trained models ("repeats": separate encoder + comparison
+              head each, different random seeds). Every input is scored against every reference with
+              every model; nothing is aggregated until post-processing.
+  Score       Unnormalized similarity logit from the network's comparison head (higher = more
+              similar). Per-mineral score = best score over that mineral's reference spectra.
+              Ensemble = plain mean of the 6 models' scores (authors' method).
+
+RESULTS -- ensemble, ranked by mineral
+  input             Si rank   Si score   best other mineral      margin (Si - next)
+  expt Si 514          1        5.29     Romeite         -0.18        +5.48
+  expt Si 532          1        9.74     Romeite          1.37        +8.37
+  expt Si 780          1        9.69     Romeite          3.09        +6.61
+  sim Si x1.036        1        6.57     Diamond         -0.13        +6.70
+  sim Si x1.0          2       -1.01     Diamond (#1)    -0.42        -0.59
+
+RESULTS -- Si rank in each of the 6 models (repeat_0 .. repeat_5)
+  input             ranks             Si score per model
+  expt Si 514       1 1 1 1 1 1        5.63  4.57  7.34  4.56  4.98  4.68
+  expt Si 532       1 1 1 1 1 1        8.15  9.27 13.03  9.34  9.39  9.23
+  expt Si 780       1 1 1 1 1 1        8.03  9.12 13.15  9.65  8.88  9.33
+  sim Si x1.036     1 1 1 1 1 1        6.85  5.75  9.86  5.51  5.92  5.51
+  sim Si x1.0       4 2 1 4 2 2       -0.73 -3.22  1.75 -2.79  0.17 -1.27
+    x1.0 top match per model: Whewellite, Diamond, Silicon, Diamond, Diamond, Diamond
+
+TAKEAWAYS
+  1. Pipeline is sound: all experimental Si controls -> Silicon, rank 1, every model, big margins.
+  2. With the known PBE frequency softening corrected (x1.036), the purely simulated spectrum is
+     identified as Silicon by all 6 models, with a margin (+6.7) comparable to the experimental
+     514 nm control (+5.5).
+  3. Uncorrected (18 cm-1 low), identification fails: Si score collapses from ~6.5 to ~-1, every
+     candidate scores negative (no confident match), Diamond comes out on top. The network is very
+     sensitive to absolute peak position; DFT frequency error matters more than spectral shape here.
+  4. The models agree completely on in-distribution inputs and disagree on the out-of-distribution
+     one (x1.0: ranks 1-4). Model disagreement looks like a useful "don't trust this match" signal.
+
+RUNNER-UPS (are they reasonable?)
+  Romeite / Fluorcalcioromeite (consistently #2-#3 for the Si-like inputs): Sb-antimonate oxides of
+    the romeite group (pyrochlore supergroup), whose spectrum is dominated by one Sb-O stretching
+    band near 510 cm-1 -- i.e. another single strong peak next to Si's 520. Very reasonable; the two
+    names are the same mineral group with near-identical spectra, so effectively one answer.
+  Diamond (top match for unscaled sim): also a single sharp line, but at ~1332 cm-1. Suggests that
+    when position doesn't match anything, the network falls back on "one sharp peak" shape.
+
+CAVEATS / OPEN QUESTIONS
+  - Ensemble = mean of raw logits, but the models' score scales differ (repeat_2 scores everything
+    ~40% higher), so the mean is dominated by the widest-scaled model. Rank-averaging or per-model
+    z-scoring would be fairer. Per-model results above are the safer thing to read.
+  - Reference library = authors' training split only (their held-out test split not included).
+  - The x1.036 scale factor is a generic PBE correction picked to land on 521 cm-1; with one peak,
+    any correction that hits ~520 will look good. Quartz (many peaks) is the real test.
+  - Only the excellent_unoriented setup run so far; the "raw" setup (1190 refs / 487 minerals,
+    different preprocessing) is cached and ready.
+
+NEXT
+  - Plots of each input vs. its top-5 matched reference spectra (plot_matches.py) -- before Friday.
+  - Same inputs on the "raw" setup.
+  - Shift sweep: scale 1.000 -> 1.045, Si rank/margin vs. peak position = how much DFT error the
+    network tolerates.
+  - Quartz: 24 optical modes -> 48 dielectric runs; same pipeline.
+
+FILES
+  raman_project/pipeline.txt         full pipeline + paths + decisions
+  raman_project/to_model_input.py    Stage 2 converter
+  raman_project/build_cache.py, score.py, postprocess.py, plot_matches.py   Stage 3
+  SCC: raman_matching/raman_spectra_matching_with_contrastive_learning/scores_eu.npz  (raw scores, 6x5x3554)
