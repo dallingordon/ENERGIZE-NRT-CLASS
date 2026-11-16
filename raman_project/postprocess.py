@@ -43,7 +43,7 @@ def main():
         [i for i, n in enumerate(label_name) if a.truth.lower() in n.lower()]
     truth = t[0] if t else None
     print("model %s (%s) | %d refs, %d minerals | truth: %s"
-          % (S["model"], S["version"][:40] + "...", meta["n_ref"], meta["n_minerals"],
+          % (str(S["model"]), str(S["version"])[:40] + "...", meta["n_ref"], meta["n_minerals"],
              "%s (label %d)" % (label_name[truth], truth) if t else "NOT FOUND"))
 
     runs = []

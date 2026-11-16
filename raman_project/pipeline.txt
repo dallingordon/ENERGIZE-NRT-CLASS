@@ -10,7 +10,7 @@ Paths (BU SCC)
                                     each <model>/version_*/ also has data_splitting/ (the saved reference/test split)
 
 Environment (SCC, for Stages 2-3)
-  module load miniconda && conda activate raman      # has pandas, scipy, torch 2.15 (CPU), torchvision
+  module unload python3; module load miniconda && conda activate raman   # (python3 module conflicts with miniconda) has pandas, scipy, torch 2.15 (CPU), torchvision
   run from the network repo root so `import data.rruff` / `model.*` resolve
 
 -------------------------------------------------------------------------------
@@ -83,8 +83,12 @@ STAGE 3 - Match against the experimental references   [TODO: script, adapt test.
             + input names/paths/sha256/spectra + copy of cache meta.  --verify cross-checks repeat_0 vs upstream.
     3c postprocess.py X.npz --combine ensemble|repeats|both --group mineral|spectrum --topk N --truth NAME [--csv]
          all aggregation happens here; re-run freely, no model needed.
-  Watch: meta.json model_training_flag. If True, BatchNorm uses batch statistics, so scores would depend on
-  which spectra are batched together (upstream encodes all refs in one batch; we do the same).
+  model_training_flag: checked 2026-11-15, False for all repeats of both models -> eval-mode BatchNorm,
+  so a spectrum's features don't depend on what else is in the batch.
+  Cache built 2026-11-15 (job 8641116, ~11 min on 8 cores):
+    excellent_unoriented: 3554 refs / 1310 minerals, 1328 wn, features (3554,128,664), 1.2 GB per repeat
+    raw:                  1190 refs /  487 minerals, 1456 wn, features (1190,128,728), 0.44 GB per repeat
+    raw reference set is much smaller -> check the truth mineral is even in it before reading ranks.
 
 -------------------------------------------------------------------------------
 STAGE 4 - Compare / report
