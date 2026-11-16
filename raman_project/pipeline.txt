@@ -9,6 +9,10 @@ Paths (BU SCC)
   trained models:                   raman_matching/data/experiments/exp_time/<model>/version_*/repeat_{0..5}/model.pt
                                     each <model>/version_*/ also has data_splitting/ (the saved reference/test split)
 
+Environment (SCC, for Stages 2-3)
+  module load miniconda && conda activate raman      # has pandas, scipy, torch 2.15 (CPU), torchvision
+  run from the network repo root so `import data.rruff` / `model.*` resolve
+
 -------------------------------------------------------------------------------
 STAGE 1 - Simulate (VASP, on the SCC)            [done for Si]
 -------------------------------------------------------------------------------
@@ -60,6 +64,14 @@ STAGE 3 - Match against the experimental references   [TODO: script, adapt test.
     4. report the top-5 minerals per input spectrum
   Inputs each run: the simulated spectrum + experimental controls (silicon_514/532/780)
   Sanity check: the experimental Si controls must come back as Si, otherwise the setup is wrong.
+  Script: match_sim.py --model M [--topk N] [--group mineral|spectrum] [--per-repeat] inputs...
+    --group mineral   : best score per mineral (repo's reorganize_similarity_score, max over a mineral's spectra)
+    --group spectrum  : every reference spectrum ranked individually (shows which RRUFF sample matched)
+    --per-repeat      : report each of the 6 repeats separately as well as the ensemble average
+
+  OPEN CONCERN (Dallin): don't fully trust the ensemble average (add_ensemble = plain mean of the
+  6 repeats' similarity scores). Check per-repeat results (--per-repeat) and see whether the repeats
+  agree before relying on the averaged ranking. Possibly report repeats separately in the write-up.
 
 -------------------------------------------------------------------------------
 STAGE 4 - Compare / report
