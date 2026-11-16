@@ -1,0 +1,68 @@
+RAMAN PIPELINE: crystal structure -> simulated spectrum -> contrastive-network match
+=================================================================================
+
+Paths (BU SCC)
+  class repo (sim code + results):  /projectnb/me500jc/students/dgordon/ENERGIZE-NRT-CLASS
+  network repo:                     /projectnb/me500jc/students/dgordon/raman_matching/raman_spectra_matching_with_contrastive_learning
+                                    (ignore the nested copy of the same name inside it)
+  dataset:                          raman_matching/data/public_dataset/mineral_preprocess/  (spectra.obj, excellent_unoriented_unoriented.csv)
+  trained models:                   raman_matching/data/experiments/exp_time/<model>/version_*/repeat_{0..5}/model.pt
+                                    each <model>/version_*/ also has data_splitting/ (the saved reference/test split)
+
+-------------------------------------------------------------------------------
+STAGE 1 - Simulate (VASP, on the SCC)            [done for Si]
+-------------------------------------------------------------------------------
+  cd raman_project/<material>_test ; qsub run_pipeline.sh
+    01_relax  -> 02_phonon (DFPT, IBRION=8) -> 03_raman (raman.py displace,
+    LEPSILON per +/- displacement) -> raman.py collect
+  Output: <material>_raman_modes.csv, <material>_raman_spectrum.csv
+          spectrum = 0-1600 cm-1, 0.5 cm-1 step, Lorentzian-broadened
+  Si result: 3 degenerate modes at 502.45 cm-1 (expt 520.7; PBE runs soft)
+  Results live in raman_project/si_test/results/ (csv is gitignored -> git add -f)
+
+-------------------------------------------------------------------------------
+STAGE 2 - Convert to the model's input format    [TODO: script]
+-------------------------------------------------------------------------------
+  Each model expects a fixed wavenumber grid + min-max normalization (max->1, min->0).
+  The grid MUST match the model you are comparing against:
+
+    model                  input length   grid
+    raw                    1456           40-1495 cm-1, 1 cm-1 step (matches the existing silicon_*_input.csv)
+    excellent_unoriented   1328           76-1403 cm-1, 1 cm-1 step
+  Source: const.py give_args_test() sets min_wave/max_wave per raman_type -- BUT for excellent_unoriented
+          it overwrites max_wave=1404 with 1024 (bug; would give 948 pts). Trained models used 1328 pts,
+          so set min_wave=76, max_wave=1404 explicitly.
+          prepare_data.give_wavenumber -> np.arange(max_wave)[min_wave:]  (integer cm-1, max_wave exclusive)
+
+  Steps: interpolate onto the model's grid -> normalize to [0,1] -> save as <material>_<model>_input.csv
+  Use the repo's own interpolation (rruff.get_interpolated_spectrum, called in prepare_data.py ~l.214)
+  so our spectra get exactly the same treatment as the references. What it does (data/rruff.py):
+    grid   = np.arange(max_wave)[min_wave:]
+    interp = scipy interp1d(x, y, kind="slinear", bounds_error=False, fill_value=0)   # linear, ZERO outside data range
+    norm   = rruff.norm(y, "max_1_min_0")
+  Easiest: import data.rruff and call find_interp + norm directly rather than re-implementing.
+  (const.py / rruff.py are upstream lyn1874 code, unmodified.)
+  Optional variant: scale DFT frequencies (~x1.036 for PBE) before interpolating, to test shift robustness.
+
+-------------------------------------------------------------------------------
+STAGE 3 - Match against the experimental references   [TODO: script, adapt test.py]
+-------------------------------------------------------------------------------
+  For each model (raw, excellent_unoriented):
+    1. load reference spectra + labels with the repo's own loader (same preprocessing as training):
+       args = const.give_args_test(raman_type) (fix max_wave, see Stage 2) ->
+       pdd.read_dataset(raman_type, model_dir, min_wave, max_wave, ..., pre_define_tt_filenames=True,
+                        data_path="../data/public_dataset/")
+       pre_define_tt_filenames=True reloads the saved split from model_dir/data_splitting/
+       data_splitting/ only stores indices/labels/filenames (tr_*.npy, label_name.npy), not spectra,
+       so the spectra are rebuilt from spectra.obj / excellent_unoriented_unoriented.csv
+    2. for repeat_0..5: get_model_inception(...) -> similarity of our spectra vs all references
+    3. average the 6 repeats (ensemble) -> reorganize_similarity_score -> one score per mineral
+    4. report the top-5 minerals per input spectrum
+  Inputs each run: the simulated spectrum + experimental controls (silicon_514/532/780)
+  Sanity check: the experimental Si controls must come back as Si, otherwise the setup is wrong.
+
+-------------------------------------------------------------------------------
+STAGE 4 - Compare / report
+-------------------------------------------------------------------------------
+  Rank of the true mineral for: simulated (raw freq) vs simulated (scaled) vs experimental controls,
+  for each model. Then repeat Stages 1-4 for quartz (24 optical modes -> 48 LEPSILON runs).
