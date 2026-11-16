@@ -73,6 +73,19 @@ STAGE 3 - Match against the experimental references   [TODO: script, adapt test.
   6 repeats' similarity scores). Check per-repeat results (--per-repeat) and see whether the repeats
   agree before relying on the averaged ranking. Possibly report repeats separately in the write-up.
 
+  CACHED VERSION (preferred; match_sim.py is the slow all-in-one reference implementation):
+    3a build_cache.py --model M   (qsub build_cache.qsub does both models on a compute node)
+         -> raman_matching/cache/<M>/<version>/ : refs.npz (ref spectra, labels, mineral, RRUFF filename, grid),
+            repeat_k_features.pt (encoder output for all refs, upstream Test.__init__ / model.forward_test),
+            meta.json (grid, arch, per-repeat ckpt path/size/mtime/sha256, torch version, model.training flag)
+    3b score.py --model M inputs... -o X.npz
+         -> scores[repeat, input, reference] from upstream model.forward_test_batch, NO aggregation,
+            + input names/paths/sha256/spectra + copy of cache meta.  --verify cross-checks repeat_0 vs upstream.
+    3c postprocess.py X.npz --combine ensemble|repeats|both --group mineral|spectrum --topk N --truth NAME [--csv]
+         all aggregation happens here; re-run freely, no model needed.
+  Watch: meta.json model_training_flag. If True, BatchNorm uses batch statistics, so scores would depend on
+  which spectra are batched together (upstream encodes all refs in one batch; we do the same).
+
 -------------------------------------------------------------------------------
 STAGE 4 - Compare / report
 -------------------------------------------------------------------------------

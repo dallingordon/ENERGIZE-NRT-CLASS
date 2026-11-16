@@ -1,0 +1,17 @@
+#!/bin/bash -l
+# Build the reference-feature cache for both models on a compute node.
+#   qsub build_cache.qsub            (from raman_project/)
+#$ -P me500jc
+#$ -N raman_cache
+#$ -pe omp 8
+#$ -l h_rt=03:00:00
+#$ -l mem_per_core=8G
+#$ -j y
+#$ -o raman_cache.log
+
+module load miniconda
+conda activate raman
+cd "$SGE_O_WORKDIR"
+for m in excellent_unoriented raw; do
+  python build_cache.py --model "$m"
+done

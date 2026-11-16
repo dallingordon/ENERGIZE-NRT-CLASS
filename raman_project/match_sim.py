@@ -40,6 +40,9 @@ def main():
     args_cli = ap.parse_args()
 
     inputs = [os.path.abspath(p) for p in args_cli.inputs]
+    missing = [p for p in inputs if not os.path.isfile(p)]
+    if missing:  # fail before the slow reference loading
+        sys.exit("input not found (run from the dir that has sim_inputs/?):\n  " + "\n  ".join(missing))
     out = os.path.abspath(args_cli.out or "match_%s_%s.csv" % (args_cli.model, args_cli.group))
 
     # the repo uses relative paths and package imports -> run from its root
