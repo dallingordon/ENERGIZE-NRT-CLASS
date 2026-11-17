@@ -1,0 +1,9 @@
+{
+  "analytic_lj_distance_A": 2.738774698963389,
+  "ase_lj_distance_A": 2.7388269451751057,
+  "vasp_pbe_distance_A": 2.756252050995894,
+  "ase_lj_minus_vasp_A": -0.017425105820788378,
+  "absolute_percent_difference": 0.6322029153499334,
+  "vasp_ionic_steps_from_toten": 113,
+  "vasp_force_tables": 6
+}

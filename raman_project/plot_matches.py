@@ -7,6 +7,7 @@ score (the one the max in reorganize_similarity_score picked). Labels: rank, min
 Usage:
     python plot_matches.py scores_eu.npz --topk 5 -o matches_eu.png
     python plot_matches.py scores_eu.npz --run repeat_2 --group spectrum --inputs si_sim
+    python plot_matches.py scores_eu.npz --inputs si_sim --layout overlay   # sim drawn on top of each match
 """
 import argparse
 import os
@@ -26,6 +27,9 @@ def main():
     ap.add_argument("--truth", default="silicon", help="highlight this mineral if it appears")
     ap.add_argument("--inputs", nargs="*", default=None, help="only plot inputs whose name contains one of these")
     ap.add_argument("--xlim", nargs=2, type=float, default=None)
+    ap.add_argument("--layout", choices=["stack", "overlay"], default="stack",
+                    help="stack: input on top, matches offset below; "
+                         "overlay: one small panel per match with the input drawn on top of it")
     ap.add_argument("-o", "--out", default=None, help="output PNG (default: <scores>_<run>_<group>.png)")
     a = ap.parse_args()
 
@@ -50,37 +54,64 @@ def main():
     members = {c: np.where(tr_label == c)[0] for c in classes}
     truth = a.truth.lower()
 
-    fig, axes = plt.subplots(len(keep), 1, figsize=(9, len(keep) * (1.2 + 0.55 * (a.topk + 1))),
-                             squeeze=False)
-    for ax, i in zip(axes[:, 0], keep):
-        s = sc[i]
+    def picks_for(s):
         if a.group == "mineral":
             best_ref = {c: members[c][np.argmax(s[members[c]])] for c in classes}
             m_score = np.array([s[best_ref[c]] for c in classes])
-            picks = [best_ref[classes[j]] for j in np.argsort(m_score)[::-1][:a.topk]]
-        else:
-            picks = list(np.argsort(s)[::-1][:a.topk])
+            return [best_ref[classes[j]] for j in np.argsort(m_score)[::-1][:a.topk]]
+        return list(np.argsort(s)[::-1][:a.topk])
 
-        step = 1.15
-        ax.plot(wn, X[i] + step * a.topk, color="black", lw=1.4)
-        ax.text(wn[-1], step * a.topk + 0.5, "input: %s" % names[i], ha="right", va="bottom", fontsize=8, weight="bold")
-        for k, r in enumerate(picks):
-            y0 = step * (a.topk - 1 - k)
-            hit = str(label_name[tr_label[r]]).lower() == truth
-            col = "#c0392b" if hit else "#2c6fbb"
-            ax.plot(wn, tr_spec[r] + y0, color=col, lw=1.0)
-            ax.text(wn[-1], y0 + 0.5, "%d. %s [%s]  %.2f" % (k + 1, label_name[tr_label[r]], tr_file[r], s[r]),
-                    ha="right", va="bottom", fontsize=7.5, color=col)
+    def style(ax, xlabel=True):
         ax.set_yticks([])
         ax.set_xlim(a.xlim or (wn[0], wn[-1]))
-        ax.set_xlabel("Raman shift (cm$^{-1}$)", fontsize=8)
+        if xlabel:
+            ax.set_xlabel("Raman shift (cm$^{-1}$)", fontsize=8)
         ax.tick_params(labelsize=7)
         for sp in ("top", "right", "left"):
             ax.spines[sp].set_visible(False)
+
+    if a.layout == "stack":
+        fig, axes = plt.subplots(len(keep), 1, figsize=(9, len(keep) * (1.2 + 0.55 * (a.topk + 1))), squeeze=False)
+        for ax, i in zip(axes[:, 0], keep):
+            s = sc[i]
+            step = 1.15
+            ax.plot(wn, X[i] + step * a.topk, color="black", lw=1.4)
+            ax.text(wn[-1], step * a.topk + 0.5, "input: %s" % names[i], ha="right", va="bottom",
+                    fontsize=8, weight="bold")
+            for k, r in enumerate(picks_for(s)):
+                y0 = step * (a.topk - 1 - k)
+                hit = str(label_name[tr_label[r]]).lower() == truth
+                col = "#c0392b" if hit else "#2c6fbb"
+                ax.plot(wn, tr_spec[r] + y0, color=col, lw=1.0)
+                ax.text(wn[-1], y0 + 0.5, "%d. %s [%s]  %.2f" % (k + 1, label_name[tr_label[r]], tr_file[r], s[r]),
+                        ha="right", va="bottom", fontsize=7.5, color=col)
+            style(ax)
+    else:
+        ncol = min(a.topk, 3)
+        nrow_per = int(np.ceil(a.topk / ncol))
+        fig, axes = plt.subplots(len(keep) * nrow_per, ncol, figsize=(4.2 * ncol, 2.1 * nrow_per * len(keep)),
+                                 squeeze=False)
+        for b, i in enumerate(keep):
+            s = sc[i]
+            picks = picks_for(s)
+            for k in range(nrow_per * ncol):
+                ax = axes[b * nrow_per + k // ncol, k % ncol]
+                if k >= len(picks):
+                    ax.axis("off")
+                    continue
+                r = picks[k]
+                hit = str(label_name[tr_label[r]]).lower() == truth
+                col = "#c0392b" if hit else "#2c6fbb"
+                ax.plot(wn, tr_spec[r], color=col, lw=1.0, label="%s [%s]" % (label_name[tr_label[r]], tr_file[r]))
+                ax.plot(wn, X[i], color="black", lw=0.9, alpha=0.8, label=str(names[i]))
+                ax.set_title("%s | #%d %s  score %.2f" % (names[i], k + 1, label_name[tr_label[r]], s[r]),
+                             fontsize=7.5, color=col)
+                ax.legend(fontsize=6, loc="upper right", frameon=False)
+                style(ax, xlabel=(k // ncol == nrow_per - 1))
     fig.suptitle("%s model | %s | top-%d by %s  (red = %s)" % (S["model"], a.run, a.topk, a.group, a.truth),
                  fontsize=9)
     fig.tight_layout()
-    out = a.out or "%s_%s_%s.png" % (os.path.splitext(a.scores)[0], a.run, a.group)
+    out = a.out or "%s_%s_%s_%s.png" % (os.path.splitext(a.scores)[0], a.run, a.group, a.layout)
     fig.savefig(out, dpi=150)
     print("wrote", out)
 

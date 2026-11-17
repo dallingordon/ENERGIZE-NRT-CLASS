@@ -1,0 +1,10 @@
+Al2 dimer, 20 A cubic box, d=3.50 A along x (template: homework2/problem5/aluminum/scf/POSCAR)
+1.0
+20.0 0.0 0.0
+0.0 20.0 0.0
+0.0 0.0 20.0
+Al
+2
+Cartesian
+8.25 10.0 10.0
+11.75 10.0 10.0

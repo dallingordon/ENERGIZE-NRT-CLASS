@@ -1,0 +1,18 @@
+FCC Al NPT -> NVT -> NVE analysis
+=================================
+Number of atoms: 108
+LAMMPS timestep: 0.001000 ps
+
+Phase boundaries (timesteps)
+NPT: 0 -> 20000
+NVT: 20000 -> 40000
+NVE: 40000 -> 60000
+
+NVE self-diffusion fit
+MSD slope: 5.72729745e+00 A^2/ps
+D = slope / 6
+D = 9.54549575e-01 A^2/ps
+D = 9.54549575e-05 cm^2/s
+
+The NVE fit uses the final 50% of the NVE MSD data.
+If the 1000 K configuration remains crystalline, D may be very small; that is a physically meaningful result.

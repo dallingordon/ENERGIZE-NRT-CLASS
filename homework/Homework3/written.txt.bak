@@ -1,0 +1,35 @@
+=== WHERE WE LEFT OFF (Mon 10/26, ~7:50pm) — DUE FRI 10/30 ===
+
+PROBLEM 4 (folder: Problem1_Al_Thermal_Expansion)
+  A  DONE. Fixed 3 things in the supplied files before it ran:
+       - uncommented pair_style / pair_coeff in in.thermal_expansion
+       - submit.sh: lammps_input=in.thermal_expansion, and "-in ${lammps_input}" instead of "<" (jump SELF needs -in)
+       - fix ave/time used "\" for line continuation (LAMMPS uses "&") -> put it on one line
+     Job ran in 59 s, all four thermal_*.dat files on SCC and laptop.
+  B  DONE. My answer:
+The instantaneous pressure responds to the all the other changes happening in the system.  at each time step the volume and the temperature are updated and the "inertia" of the whole system will cause it to fluctuate, but with enough time those fluctuations settel about a mean, the mean that we picked! The degree of the fluctuation has much to do with the properties of the material, in this case the stiffness of aluminum.  The second have of the simulation has a very steady mean about our preset pressure and temperature, as does our volume.
+     Plots (optional, in Problem1 folder): 300Keq.png, thermo_100K_full.png, thermo_300K_full.png, thermo_700K_full.png, volume_all_T.png
+  C  DONE (Mon 10/26). .dat files scp'd to laptop; script run locally (conda env materials_by_design_local).
+     TODOs 1-3 filled in analyze_thermal_expansion_template.py (2-panel plot: a vs T + residuals).
+     !! Before submitting: UNCOMMENT the plt.savefig line in TODO 2 so al_thermal_expansion.png gets written.
+  D  DONE. da/dT = 1.4271e-04 A/K, a_ref = 4.07314 A, alpha = 3.5037e-05 1/K
+     Mean a: 100 K 4.090351 | 300 K 4.113028 | 500 K 4.141542 | 700 K 4.175988 A  (SEM 0.0001-0.0004 A)
+  E  DRAFTED (bottom of the analysis script). Possible polish: why P = 0 (real crystal at ~ambient pressure, alpha is
+     defined at constant P); say NVT pressure rises with T; typos.
+  F  TODO: 150-250 word paragraph. Raw material = Q1-5 answers at bottom of the analysis script (all correct now).
+  Submit: completed template, al_thermal_expansion.png, thermal_expansion_summary.csv, table of a at 4 temps + alpha, E, F.
+
+PROBLEM 5 (folder: Problem2_LJ_ASE_VASP)  NOT STARTED
+  - On SCC: copy the Al POTCAR in:  cp homework/homework2/problem5/POTCAR_Al/POTCAR homework/Homework3/Problem2_LJ_ASE_VASP/vasp/POTCAR  (same file as HW2's)
+  - Plan: write the POSCAR first (2 Al, 3.50 A apart, centered in 20 A cubic box) + submit.sh (start from HW2's), queue VASP,
+    then do A-C locally (run fit script; TODO 1 build dimer `atoms`; TODO 2 ASE optimizer, traj/log to results/, fmax <= 0.01).
+
+a) 
+FITTED LENNARD-JONES PARAMETERS
+===============================
+epsilon = 0.950584 eV
+sigma   = 2.439971 A
+RMSE    = 0.009027 eV
+Analytical LJ equilibrium distance = 2.738775 A
+
+It is a great fit.  the RMSE is 2 orders of magnitude smaller than epsilon which is a very small error.  
