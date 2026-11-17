@@ -8,6 +8,8 @@ Usage:
     python plot_matches.py scores_eu.npz --topk 5 -o matches_eu.png
     python plot_matches.py scores_eu.npz --run repeat_2 --group spectrum --inputs si_sim
     python plot_matches.py scores_eu.npz --inputs si_sim --layout overlay   # sim drawn on top of each match
+    python plot_matches.py scores_eu.npz --inputs si_sim --layout repeats   # #1 match of each model, overlaid
+    python plot_matches.py scores_eu.npz --inputs si_sim --layout repeats --rank 2
 """
 import argparse
 import os
@@ -16,6 +18,14 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
+
+
+def short_id(fname):
+    """'Silicon__R040145__Raman__532__0__unoriented__...' -> 'R040145, 532 nm'"""
+    parts = str(fname).split("__")
+    if len(parts) >= 4 and parts[1].startswith("R"):
+        return "%s, %s nm" % (parts[1], parts[3])
+    return str(fname)
 
 
 def main():
@@ -27,9 +37,12 @@ def main():
     ap.add_argument("--truth", default="silicon", help="highlight this mineral if it appears")
     ap.add_argument("--inputs", nargs="*", default=None, help="only plot inputs whose name contains one of these")
     ap.add_argument("--xlim", nargs=2, type=float, default=None)
-    ap.add_argument("--layout", choices=["stack", "overlay"], default="stack",
+    ap.add_argument("--layout", choices=["stack", "overlay", "repeats"], default="stack",
                     help="stack: input on top, matches offset below; "
-                         "overlay: one small panel per match with the input drawn on top of it")
+                         "overlay: one small panel per match with the input drawn on top of it; "
+                         "repeats: one panel per input, the #1 match of the ensemble and of each of the "
+                         "6 models drawn on top of each other (identical picks share a line)")
+    ap.add_argument("--rank", type=int, default=1, help="repeats layout: which rank to show (1 = top match)")
     ap.add_argument("-o", "--out", default=None, help="output PNG (default: <scores>_<run>_<group>.png)")
     a = ap.parse_args()
 
@@ -83,8 +96,28 @@ def main():
                 hit = str(label_name[tr_label[r]]).lower() == truth
                 col = "#c0392b" if hit else "#2c6fbb"
                 ax.plot(wn, tr_spec[r] + y0, color=col, lw=1.0)
-                ax.text(wn[-1], y0 + 0.5, "%d. %s [%s]  %.2f" % (k + 1, label_name[tr_label[r]], tr_file[r], s[r]),
+                ax.text(wn[-1], y0 + 0.5, "%d. %s [%s]  %.2f" % (k + 1, label_name[tr_label[r]], short_id(tr_file[r]), s[r]),
                         ha="right", va="bottom", fontsize=7.5, color=col)
+            style(ax)
+    elif a.layout == "repeats":
+        runs = [("ensemble", scores.mean(axis=0))] + [(r, scores[j]) for j, r in enumerate(repeats)]
+        colors = plt.cm.tab10(np.arange(10))
+        fig, axes = plt.subplots(len(keep), 1, figsize=(10, 3.4 * len(keep)), squeeze=False)
+        for ax, i in zip(axes[:, 0], keep):
+            ax.plot(wn, X[i], color="black", lw=2.2, label="input: %s" % names[i], zorder=10)
+            picked = {}  # reference index -> list of (run, score)
+            for run, sc_run in runs:
+                r = picks_for(sc_run[i])[a.rank - 1]
+                picked.setdefault(r, []).append((run, float(sc_run[i][r])))
+            for c, (r, who) in enumerate(picked.items()):
+                hit = str(label_name[tr_label[r]]).lower() == truth
+                runs_txt = ", ".join("%s %.2f" % (w.replace("repeat_", "r"), v) for w, v in who)
+                ax.plot(wn, tr_spec[r], color=colors[c % 10], lw=1.3, alpha=0.85,
+                        ls="-" if hit else "--",
+                        label="%s [%s]  <- %s" % (label_name[tr_label[r]], short_id(tr_file[r]), runs_txt))
+            ax.set_title("%s | #%d match per model (solid = %s, dashed = other)" % (names[i], a.rank, a.truth),
+                         fontsize=9)
+            ax.legend(fontsize=7, loc="upper right", frameon=False)
             style(ax)
     else:
         ncol = min(a.topk, 3)
@@ -102,14 +135,17 @@ def main():
                 r = picks[k]
                 hit = str(label_name[tr_label[r]]).lower() == truth
                 col = "#c0392b" if hit else "#2c6fbb"
-                ax.plot(wn, tr_spec[r], color=col, lw=1.0, label="%s [%s]" % (label_name[tr_label[r]], tr_file[r]))
+                ax.plot(wn, tr_spec[r], color=col, lw=1.0, label="%s [%s]" % (label_name[tr_label[r]], short_id(tr_file[r])))
                 ax.plot(wn, X[i], color="black", lw=0.9, alpha=0.8, label=str(names[i]))
                 ax.set_title("%s | #%d %s  score %.2f" % (names[i], k + 1, label_name[tr_label[r]], s[r]),
                              fontsize=7.5, color=col)
                 ax.legend(fontsize=6, loc="upper right", frameon=False)
                 style(ax, xlabel=(k // ncol == nrow_per - 1))
-    fig.suptitle("%s model | %s | top-%d by %s  (red = %s)" % (S["model"], a.run, a.topk, a.group, a.truth),
-                 fontsize=9)
+    if a.layout == "repeats":
+        fig.suptitle("%s model | ensemble vs. each of the 6 models | by %s" % (S["model"], a.group), fontsize=9)
+    else:
+        fig.suptitle("%s model | %s | top-%d by %s  (red = %s)" % (S["model"], a.run, a.topk, a.group, a.truth),
+                     fontsize=9)
     fig.tight_layout()
     out = a.out or "%s_%s_%s_%s.png" % (os.path.splitext(a.scores)[0], a.run, a.group, a.layout)
     fig.savefig(out, dpi=150)
