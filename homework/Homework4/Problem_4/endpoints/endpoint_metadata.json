@@ -1,0 +1,19 @@
+{
+  "lattice_constant_A": 4.05,
+  "replication": [
+    3,
+    3,
+    3
+  ],
+  "perfect_atom_count": 108,
+  "defective_atom_count": 107,
+  "vacancy_index_in_perfect_crystal": 53,
+  "vacancy_position_A": [
+    4.05,
+    6.074999999999999,
+    6.074999999999999
+  ],
+  "migrating_atom_index_in_defective_structure": 52,
+  "jump_distance_A": 2.8637824638055167,
+  "expected_fcc_nearest_neighbor_distance_A": 2.863782463805517
+}

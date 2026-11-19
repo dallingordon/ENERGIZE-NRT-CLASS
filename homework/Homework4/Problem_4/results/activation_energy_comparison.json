@@ -1,0 +1,10 @@
+{
+  "Ea_NEB_eV": 0.35948810600194747,
+  "Ea_KMC_eV": 0.35985663908903137,
+  "Ea_experiment_eV": 0.61,
+  "Ea_experiment_uncertainty_eV": 0.02,
+  "experimental_D0_m2_s": 6e-06,
+  "NEB_minus_experiment_eV": -0.2505118939980525,
+  "KMC_minus_NEB_eV": 0.00036853308708389987,
+  "KMC_minus_experiment_eV": -0.2501433609109686
+}

@@ -1,0 +1,8 @@
+{
+  "migration_barrier_eV": 0.35948810600194747,
+  "saddle_image_index": 3,
+  "initial_energy_eV": -382.122368081063,
+  "saddle_energy_eV": -381.762879975061,
+  "final_energy_eV": -382.122368081062,
+  "endpoint_energy_difference_eV": 9.663381206337363e-13
+}
