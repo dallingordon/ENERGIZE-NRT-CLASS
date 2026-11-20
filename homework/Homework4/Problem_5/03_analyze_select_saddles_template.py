@@ -65,7 +65,10 @@ print(rmsd_df.round(4).to_string())
 #     {'search': 'S04', 'name': 'mechanism_B'},
 # ]
 #
-SELECTED = []
+SELECTED = [
+    {'search': 'S03', 'name': 'alt_1'},
+    {'search': 'S04', 'name': 'offaxis_high'},
+]
 
 if len(SELECTED) != 2:
     raise NotImplementedError('Select exactly two distinct Dimer saddles in SELECTED.')

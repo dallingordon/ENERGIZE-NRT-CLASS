@@ -1,0 +1,148 @@
+MINMODE:METHOD: Dimer
+DIM:CONTROL: Search Parameters:
+DIM:CONTROL: ------------------
+DIM:CONTROL: eigenmode_method = dimer
+DIM:CONTROL: f_rot_min = 0.1
+DIM:CONTROL: f_rot_max = 1.0
+DIM:CONTROL: max_num_rot = 1
+DIM:CONTROL: trial_angle = 0.7853981633974483
+DIM:CONTROL: trial_trans_step = 0.001
+DIM:CONTROL: maximum_translation = 0.1
+DIM:CONTROL: cg_translation = True
+DIM:CONTROL: use_central_forces = True
+DIM:CONTROL: dimer_separation = 0.0001
+DIM:CONTROL: initial_eigenmode_method = displacement
+DIM:CONTROL: extrapolate_forces = False
+DIM:CONTROL: displacement_method = vector
+DIM:CONTROL: gauss_std = 0.1
+DIM:CONTROL: order = 1
+DIM:CONTROL: mask = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+DIM:CONTROL: displacement_center = None
+DIM:CONTROL: displacement_radius = None
+DIM:CONTROL: number_of_displacement_atoms = None
+DIM:CONTROL: ------------------
+DIM:ROT: OPT-STEP ROT-STEP CURVATURE ROT-ANGLE ROT-FORCE
+MINMODE:DISP:       0      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:       1      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:       2      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:       3      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:       4      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:       5      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:       6      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:       7      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:       8      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:       9      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      10      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      11      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      12      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      13      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      14      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      15      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      16      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      17      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      18      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      19      0.10595892      0.00021723      0.10617278
+MINMODE:DISP:      20      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      21      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      22      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      23      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      24      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      25      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      26      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      27      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      28      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      29      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      30      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      31      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      32      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      33      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      34      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      35      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      36      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      37      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      38      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      39      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      40      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      41      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      42      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      43      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      44      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      45      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      46      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      47      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      48      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      49      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      50      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      51      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      52      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      53      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      54      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      55      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      56      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      57      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      58      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      59      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      60      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      61      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      62      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      63      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      64      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      65      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      66      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      67      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      68      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      69      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      70      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      71      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      72      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      73      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      74      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      75      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      76      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      77      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      78      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      79      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      80      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      81      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      82      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      83      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      84      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      85      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      86      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      87      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      88      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      89      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      90      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      91      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      92      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      93      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      94      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      95      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      96      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      97      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      98      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:      99      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:     100      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:     101      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:     102      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:     103      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:     104      0.00000000      0.00000000      0.00000000
+MINMODE:DISP:     105      0.00000000      0.00000000      0.00000000
+DIM:ROT:       0         1    0.9313   27.6070    1.6988
+DIM:ROT:       1         1    0.4711    9.6432    0.8122
+DIM:ROT:       2         1    0.2257    5.5942    0.3315
+DIM:ROT:       3         1    0.1288    3.0191    0.2896
+DIM:ROT:       4         1    0.0747    3.8915    0.2108
+DIM:ROT:       5         1    0.0057    2.8097    0.1743
+DIM:ROT:       6         1   -0.0811    3.4395    0.1973
+DIM:ROT:       7         1   -0.0992    2.1772    0.1698
+DIM:ROT:       8         1   -0.1206    2.6689    0.1644
+DIM:ROT:       9         1   -0.1949    2.8160    0.2043
+DIM:ROT:      10         1   -0.3036    3.6847    0.2426
+DIM:ROT:      11         1   -0.4385    3.7339    0.2873
+DIM:ROT:      12         1   -0.6014    4.2655    0.3244
+DIM:ROT:      13         1   -0.7471    3.8240    0.3482
+DIM:ROT:      14         1   -0.8675    4.1255    0.3434
+DIM:ROT:      15         1   -0.9129    3.3276    0.3073
+DIM:ROT:      16         1   -0.9123    2.2475    0.2294
+DIM:ROT:      17         1   -0.9180    1.4202    0.1495

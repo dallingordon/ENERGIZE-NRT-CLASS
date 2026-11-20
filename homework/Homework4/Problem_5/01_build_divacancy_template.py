@@ -35,7 +35,9 @@ NN_DISTANCE = A0 / np.sqrt(2.0)
 # and replicate the conventional cubic cell by REPLICATION.
 # The final perfect structure should contain 108 atoms.
 #
-atoms = None
+#bulk_al = copied from 4
+
+atoms = bulk('Al', crystalstructure='fcc', a=A0, cubic=True).repeat(REPLICATION)
 
 if atoms is None:
     raise NotImplementedError('TODO 1: build the 3x3x3 conventional FCC Al crystal.')
@@ -51,13 +53,27 @@ print(' pair   atom_i  atom_j   separation(A)')
 for k, (_, d, i, j, _) in enumerate(candidates):
     print(f' {k:>4d}   {i:>6d}  {j:>6d}      {d:8.4f}')
 
+#breakpoint()
+#  pair   atom_i  atom_j   separation(A)
+#     0       53      54        2.8638
+#     1       53      55        2.8638
+#     2       54      55        2.8638
+#     3       53      59        2.8638
+#     4       53      66        2.8638
+#     5       54      59        2.8638
+#     6       54      89        2.8638
+#     7       55      66        2.8638
+#     8       55      89        2.8638
+#     9       59      66        2.8638
+#    10       59      89        2.8638
+#    11       66      89        2.8638
 # =====================================================================
 # TODO 2 - CHOOSE THE TWO LATTICE SITES TO REMOVE
 # =====================================================================
 # Pick one nearest-neighbor pair from the table above and enter the two
 # atom indices, for example: VACANCY_PAIR = (12, 15)
 #
-VACANCY_PAIR = None
+VACANCY_PAIR = (53,54)
 
 if VACANCY_PAIR is None:
     raise NotImplementedError('TODO 2: choose a nearest-neighbor pair to remove.')

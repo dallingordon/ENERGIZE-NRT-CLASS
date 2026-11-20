@@ -141,7 +141,8 @@ migrating_atom_index, _ = nearest_atom_to_point(initial, vacancy_position_A)
 final = initial.copy()
 final.positions[migrating_atom_index] = vacancy_position_A
 
-
+##ase gui endpoints/initial.traj endpoints/final.traj
+##two fingers to drag.  52 moves!!
 
 if final is None or migrating_atom_index is None:
     raise NotImplementedError(

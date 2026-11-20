@@ -1,0 +1,46 @@
+{
+  "mechanisms": [
+    {
+      "name": "alt_1",
+      "search": "S03",
+      "downhill_displacement_A": 0.12,
+      "endpoint_rmsd_A": 0.2692218777980833,
+      "state_A_energy_eV": -377.95073022612087,
+      "state_B_energy_eV": -377.8876454570884,
+      "saddle_energy_eV": -377.5605294884592,
+      "dimer_forward_barrier_eV": 0.39020073766164387,
+      "dimer_reverse_barrier_eV": 0.3271159686291867,
+      "state_A_vacancy_sites": [
+        53,
+        54
+      ],
+      "state_B_vacancy_sites": [
+        30,
+        54
+      ],
+      "state_A_vacancy_separation_A": 2.8637824638055167,
+      "state_B_vacancy_separation_A": 5.727564927611034
+    },
+    {
+      "name": "offaxis_high",
+      "search": "S04",
+      "downhill_displacement_A": 0.12,
+      "endpoint_rmsd_A": 0.27000974351337853,
+      "state_A_energy_eV": -377.9512110017279,
+      "state_B_energy_eV": -377.898705183154,
+      "saddle_energy_eV": -377.5532792515445,
+      "dimer_forward_barrier_eV": 0.39793175018343163,
+      "dimer_reverse_barrier_eV": 0.34542593160949764,
+      "state_A_vacancy_sites": [
+        53,
+        54
+      ],
+      "state_B_vacancy_sites": [
+        19,
+        54
+      ],
+      "state_A_vacancy_separation_A": 2.8637824638055167,
+      "state_B_vacancy_separation_A": 4.960216729135935
+    }
+  ]
+}

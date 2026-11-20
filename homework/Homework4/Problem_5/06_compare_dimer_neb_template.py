@@ -39,8 +39,8 @@ for col, mechanism in enumerate(index):
     # Dimer: saddle energy - state A energy
     # NEB:   highest NEB image energy - state A energy
     #
-    dimer_barrier = None
-    neb_barrier = None
+    dimer_barrier = E_saddle - EA
+    neb_barrier = np.max(neb_energies) - EA
 
     if dimer_barrier is None or neb_barrier is None:
         raise NotImplementedError('TODO 1: calculate Dimer and NEB forward barriers.')
@@ -48,7 +48,7 @@ for col, mechanism in enumerate(index):
     # =================================================================
     # TODO 2 - CALCULATE THEIR ABSOLUTE DIFFERENCE
     # =================================================================
-    barrier_difference = None
+    barrier_difference = abs(dimer_barrier - neb_barrier)
     if barrier_difference is None:
         raise NotImplementedError('TODO 2: calculate the absolute barrier difference.')
 
@@ -65,7 +65,12 @@ for col, mechanism in enumerate(index):
     #   * label axes and add a legend/title
     #
     ax = axes[0, col]
-    # YOUR PLOTTING CODE HERE
+    ax.plot(reaction_coordinate, relative_neb, 'o-', label=f'NEB (Ea = {neb_barrier:.3f} eV)')
+    ax.axhline(relative_dimer, ls='--', color='tab:red', label=f'Dimer saddle (Ea = {dimer_barrier:.3f} eV)')
+    ax.set_xlabel('Normalized reaction coordinate')
+    ax.set_ylabel('Energy relative to state A (eV)')
+    ax.set_title(f"{name} ({mechanism['search']})")
+    ax.legend()
 
     rows.append({
         'mechanism': name,

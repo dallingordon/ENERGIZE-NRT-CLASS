@@ -60,7 +60,16 @@ for rank, (d, idx, vec) in enumerate(nearby_atoms_for_vacancy(base, vacancy_posi
 #     ...
 # ]
 #
-SEARCH_SPECS = []
+SEARCH_SPECS = [
+    {'label': 'S01', 'atom_index': 53, 'vacancy': 1},  
+    {'label': 'S03', 'atom_index': 30, 'vacancy': 1},  
+    {'label': 'S04', 'atom_index': 19, 'vacancy': 1},  
+    {'label': 'S05', 'atom_index': 64, 'vacancy': 1}, 
+    
+    {'label': 'S02', 'atom_index': 54, 'vacancy': 2},  
+    {'label': 'S06', 'atom_index': 90, 'vacancy': 2},  
+
+]
 
 if len(SEARCH_SPECS) != 6:
     raise NotImplementedError('Define exactly six Dimer searches in SEARCH_SPECS.')

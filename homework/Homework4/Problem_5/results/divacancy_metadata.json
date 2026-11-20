@@ -1,0 +1,30 @@
+{
+  "lattice_constant_A": 4.05,
+  "replication": [
+    3,
+    3,
+    3
+  ],
+  "perfect_atoms": 108,
+  "defect_atoms": 106,
+  "removed_original_indices": [
+    53,
+    54
+  ],
+  "vacancy_positions_A": [
+    [
+      4.05,
+      6.074999999999999,
+      6.074999999999999
+    ],
+    [
+      6.074999999999999,
+      4.05,
+      6.074999999999999
+    ]
+  ],
+  "initial_vacancy_separation_A": 2.8637824638055167,
+  "anchor_index_in_defect": 0,
+  "unrelaxed_energy_eV": -377.7133895295558,
+  "relaxed_energy_eV": -377.9507420998552
+}
